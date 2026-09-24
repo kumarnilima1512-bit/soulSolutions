@@ -1,0 +1,222 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream font-sans text-navy antialiased;
+}
+
+/* Visible focus (keyboard users) */
+:focus-visible {
+  outline: 2px solid #7c5cc4;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Hero image fade mask ---------- */
+.hero-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+}
+@media (min-width: 1024px) {
+  .hero-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.55) 14%, #000 38%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.55) 14%, #000 38%);
+  }
+}
+
+/* ---------- Continuous, slow background animations ---------- */
+@keyframes cloud-drift {
+  from { transform: translate3d(-5%, 0, 0); }
+  to   { transform: translate3d(6%, 0, 0); }
+}
+@keyframes sun-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.95; transform: scale(1.08); }
+}
+@keyframes steam-rise {
+  0%   { opacity: 0;   transform: translate3d(0, 8px, 0); }
+  30%  { opacity: 0.6; }
+  100% { opacity: 0;   transform: translate3d(0, -26px, 0); }
+}
+@keyframes breathe {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(0, -4px, 0) scale(1.012); }
+}
+
+.anim-cloud  { animation: cloud-drift 40s ease-in-out infinite alternate; }
+.anim-sun    { animation: sun-pulse 9s ease-in-out infinite; }
+.anim-steam  { animation: steam-rise 6s ease-in-out infinite; }
+.anim-breathe{ animation: breathe 12s ease-in-out infinite; }
+
+/* Mobile: continuous animation kom */
+@media (max-width: 767px) {
+  .anim-cloud { animation-duration: 70s; }
+  .anim-breathe { animation: none; }
+}
+
+/* Reduced motion: sob continuous animation + transition off */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Photo layers (cloud drift, tree sway, grass sway) ---------- */
+@keyframes sky-drift {
+  from { transform: translate3d(-1.8%, 0, 0) scale(1.03); }
+  to   { transform: translate3d(1.8%, 0, 0) scale(1.03); }
+}
+@keyframes tree-sway {
+  0%, 100% { transform: rotate(-0.7deg) translate3d(0, 0, 0); }
+  50%      { transform: rotate(0.9deg) translate3d(-4px, 3px, 0); }
+}
+@keyframes grass-sway {
+  0%, 100% { transform: skewX(-0.8deg) translate3d(0, 0, 0); }
+  50%      { transform: skewX(0.9deg) translate3d(3px, 0, 0); }
+}
+
+.layer-sky {
+  animation: sky-drift 45s ease-in-out infinite alternate;
+  will-change: transform;
+  -webkit-mask-image: radial-gradient(ellipse 42% 26% at 32% 15%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 42% 26% at 32% 15%, #000 50%, transparent 100%);
+}
+.layer-tree {
+  transform-origin: 88% 55%;
+  animation: tree-sway 9s ease-in-out infinite;
+  will-change: transform;
+  -webkit-mask-image: radial-gradient(ellipse 40% 38% at 78% 22%, #000 45%, transparent 100%);
+  mask-image: radial-gradient(ellipse 40% 38% at 78% 22%, #000 45%, transparent 100%);
+}
+.layer-grass {
+  transform-origin: 50% 100%;
+  animation: grass-sway 7s ease-in-out infinite;
+  will-change: transform;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 12%, transparent 38%);
+  mask-image: linear-gradient(to top, #000 0%, #000 12%, transparent 38%);
+}
+
+/* Mobile: layer animation off, battery/perf bachate */
+@media (max-width: 767px) {
+  .layer-sky, .layer-tree, .layer-grass { animation: none; }
+}
+/* ---------- Vision & Mission effects ---------- */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes blob-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(60px, -40px, 0) scale(1.15); }
+}
+@keyframes blob-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50%      { transform: translate3d(-50px, 50px, 0) scale(0.92); }
+}
+@keyframes ring-breathe {
+  0%   { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.7);  opacity: 0; }
+}
+@keyframes border-spin {
+  to { --angle: 360deg; }
+}
+@keyframes text-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes twinkle-soft {
+  0%, 100% { opacity: 0.25; transform: translate3d(0, 0, 0); }
+  50%      { opacity: 0.9;  transform: translate3d(0, -10px, 0); }
+}
+
+.vm-blob-a { animation: blob-a 22s ease-in-out infinite; }
+.vm-blob-b { animation: blob-b 28s ease-in-out infinite; }
+.vm-ring   { animation: ring-breathe 5s ease-out infinite; }
+.vm-dot    { animation: twinkle-soft 7s ease-in-out infinite; }
+
+.vm-shimmer {
+  background: linear-gradient(90deg, #3f2e80, #7c5cc4, #e89a7a, #7c5cc4, #3f2e80);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-shimmer 8s linear infinite;
+}
+
+/* Cursor spotlight */
+.vm-spot {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+.vm-card:hover .vm-spot { opacity: 1; }
+
+/* Rotating glow border */
+.vm-border {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0 55%,
+    #7c5cc4 72%,
+    #f4b99a 88%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: border-spin 6s linear infinite;
+}
+.vm-card:hover .vm-border { opacity: 1; }
+
+/* Scroll reveal (is-in class Vue theke ashe) */
+.reveal-word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate3d(0, 16px, 0);
+  transition: opacity 0.9s ease, filter 0.9s ease, transform 0.9s ease;
+  transition-delay: var(--d, 0ms);
+}
+.reveal-block {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+  transition-delay: var(--d, 0ms);
+}
+.is-in .reveal-word,
+.is-in .reveal-block {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* Tick mark draw */
+.vm-tick path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 0.9s ease var(--d, 0ms);
+}
+.is-in .vm-tick path { stroke-dashoffset: 0; }
+
+/* Mobile: continuous effect kom */
+@media (max-width: 767px) {
+  .vm-blob-a, .vm-blob-b, .vm-border { animation: none; }
+}
+/* Touch device-e spotlight dorkar nei */
+@media (hover: none) {
+  .vm-spot { display: none; }
+}
