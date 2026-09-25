@@ -27,5 +27,6 @@ export default defineNuxtConfig({
   notionToken: '',
   notionDatabaseId: '',
   notionBlogDatabaseId: '',
+  notionGalleryDatabaseId: '',
 },
 })
