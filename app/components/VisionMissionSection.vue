@@ -8,7 +8,7 @@ const missionPoints = [
   'Build a judgment-free space where every feeling is welcome.',
 ]
 
-// Scroll-e section dekha gele animation start hoy
+// Scroll Animation: when section is in viewport, add class "is-in" to trigger CSS animation
 const root = ref<HTMLElement | null>(null)
 const visible = ref(false)
 useIntersectionObserver(
@@ -19,7 +19,7 @@ useIntersectionObserver(
   { threshold: 0.15 },
 )
 
-// Cursor-er position CSS variable-e pathay (spotlight-er jonno)
+// Mouse move effect: on mousemove, set CSS variables --mx and --my to the mouse position relative to the card
 const onMove = (e: MouseEvent) => {
   const el = e.currentTarget as HTMLElement
   const r = el.getBoundingClientRect()

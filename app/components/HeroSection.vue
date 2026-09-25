@@ -81,7 +81,7 @@ const reduceMotion = usePreferredReducedMotion()
       class="hero-mask relative h-[380px] sm:h-[460px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[68%]"
     >
       <div class="absolute -inset-[3%]" :style="layerStyle(6)">
-        <!-- Reduced motion hole shudhu still image -->
+        <!-- Reduced motion , still image -->
         <img
           v-if="reduceMotion === 'reduce'"
           src="/images/hero.png"
@@ -89,7 +89,7 @@ const reduceMotion = usePreferredReducedMotion()
           class="h-full w-full object-cover object-[70%_center]"
         />
 
-        <!-- Normal: looping video (poster = video load howar age image dekhay) -->
+        <!-- Normal: looping video (poster = video ) -->
         <video
           v-else
           class="h-full w-full object-cover object-[70%_center]"
