@@ -45,7 +45,7 @@ watch(() => route.fullPath, () => (open.value = false))
         <img
           src="/images/logo.png"
           alt="Soul Solutions logo"
-          class="h-16 w-auto sm:h-18"
+          class="h-18 w-auto sm:h-20"
         />
         <span class="flex flex-col leading-none">
           <span class="font-serif text-[1.7rem] font-semibold text-navy sm:text-[2.1rem]">
