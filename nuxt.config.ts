@@ -28,5 +28,6 @@ export default defineNuxtConfig({
   notionDatabaseId: '',
   notionBlogDatabaseId: '',
   notionGalleryDatabaseId: '',
+  notionVideosDatabaseId: '',
 },
 })

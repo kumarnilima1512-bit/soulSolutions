@@ -42,20 +42,11 @@ watch(() => route.fullPath, () => (open.value = false))
         :initial="{ opacity: 0, x: -24 }"
         :enter="{ opacity: 1, x: 0, transition: { duration: 800, delay: 100 } }"
       >
-        <svg
-          viewBox="0 0 48 40"
-          class="h-9 w-11 text-plum"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M24 34C14 30 12 18 24 5c12 13 10 25 0 29Z" />
-          <path d="M24 34C12 34 5 26 4 16c9 0 16 6 20 18Z" />
-          <path d="M24 34c12 0 19-8 20-18-9 0-16 6-20 18Z" />
-        </svg>
+        <img
+          src="/images/logo.png"
+          alt="Soul Solutions logo"
+          class="h-16 w-auto sm:h-18"
+        />
         <span class="flex flex-col leading-none">
           <span class="font-serif text-[1.7rem] font-semibold text-navy sm:text-[2.1rem]">
             Soul Solutions
@@ -106,7 +97,7 @@ watch(() => route.fullPath, () => (open.value = false))
         </button>
 
         <NuxtLink
-          to="/#contact"
+          to="/contact"
           class="hidden rounded-full bg-plum px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_30px_rgba(124,92,196,0.55)] sm:inline-block"
           v-motion
           :initial="{ opacity: 0, y: -8 }"
