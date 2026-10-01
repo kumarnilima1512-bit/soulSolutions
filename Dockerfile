@@ -1,0 +1,27 @@
+FROM node:22-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine AS runtime
+
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
+
+
+COPY --from=build /app/.output ./.output
+
+EXPOSE 3000
+
+# Run as a non-root user for better container security
+RUN addgroup -S nuxt && adduser -S nuxt -G nuxt
+USER nuxt
+
+CMD ["node", ".output/server/index.mjs"]

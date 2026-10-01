@@ -1,4 +1,3 @@
-// layerStyle(strength): strength jototuku beshi, layer totuku beshi nodbe (px).
 export function useParallax() {
   const { x, y, enabled } = useMousePosition()
 

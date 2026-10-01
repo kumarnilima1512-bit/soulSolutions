@@ -1,7 +1,7 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-// Batch 3-e Journey section-e use hobe. Auto cleanup kore.
+
 export function useScrollAnimation() {
   let ctx: gsap.Context | null = null
 

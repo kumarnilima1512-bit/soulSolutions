@@ -1,5 +1,5 @@
-// Desktop + mouse + no reduced-motion hole tobei enabled hoy.
-// x, y: -1 theke 1, smooth (lerp) kora.
+// Desktop + mouse + no reduced-motion  enabled 
+
 export function useMousePosition() {
   const x = ref(0)
   const y = ref(0)

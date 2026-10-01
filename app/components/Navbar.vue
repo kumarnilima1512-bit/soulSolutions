@@ -97,7 +97,7 @@ watch(() => route.fullPath, () => (open.value = false))
         </button>
 
         <NuxtLink
-          to="/contact"
+          to="/book"
           class="hidden rounded-full bg-plum px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_30px_rgba(124,92,196,0.55)] sm:inline-block"
           v-motion
           :initial="{ opacity: 0, y: -8 }"
