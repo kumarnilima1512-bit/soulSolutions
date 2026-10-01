@@ -146,7 +146,7 @@ watch(() => route.fullPath, () => (open.value = false))
             </li>
           </ul>
           <NuxtLink
-            to="/contact"
+            to="/book"
             class="mt-4 block rounded-full bg-plum py-3 text-center text-sm font-medium text-white"
           >
             Book a Session

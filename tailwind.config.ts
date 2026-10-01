@@ -5,20 +5,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: '#26234f',
-        plum: '#3f2e80',
-        violet: '#7c5cc4',
-        lavender: '#e9e4f7',
-        'lavender-soft': '#f1eef9',
-        cream: '#fdf9f6',
-        peach: '#fbe3d3',
-        blush: '#f6d9e6',
-        sky: '#dce9f6',
-        mint: '#d9eee5',
+       
+        // Primary colors 
+        navy: '#1E4D46',        // Deep Forest Green — headings, main text
+        plum: '#1E4D46',        // Deep Forest Green — buttons, links, key accents
+        violet: '#7DA88E',      // Sage Green — hover states, secondary accents
+        gold: '#C9B88C',        // Warm Gold/Tan — highlights, borders
+
+        // Secondary colors 
+        lavender: '#DCEBE1',        // Light Mint — card backgrounds, soft accents
+        'lavender-soft': '#F7F5F1', // Off-White — page backgrounds
+        cream: '#F7F5F1',           // Off-White — main background
+        peach: '#E7DED0',           // Beige — warm accent backgrounds
+        blush: '#C9B88C',           // Warm Gold/Tan — used where a warm accent is needed
+        sky: '#DCEBE1',             // Light Mint — used where a cool accent is needed
+        mint: '#DCEBE1',            // Light Mint — success states, icon backgrounds
       },
       fontFamily: {
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        sans: ['Lato', 'system-ui', 'sans-serif'],
         script: ['Caveat', 'cursive'],
       },
       keyframes: {

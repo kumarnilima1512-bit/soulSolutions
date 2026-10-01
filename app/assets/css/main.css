@@ -142,7 +142,7 @@ body {
 .vm-dot    { animation: twinkle-soft 7s ease-in-out infinite; }
 
 .vm-shimmer {
-  background: linear-gradient(90deg, #3f2e80, #7c5cc4, #e89a7a, #7c5cc4, #3f2e80);
+  background: linear-gradient(90deg,#1e4d46, #7da88e, #c9b88c, #7da88e, #1e4d46);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -170,8 +170,8 @@ body {
   background: conic-gradient(
     from var(--angle),
     transparent 0 55%,
-    #7c5cc4 72%,
-    #f4b99a 88%,
+    #7da88e 72%,
+    #c9b88c 88%,
     transparent 100%
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);

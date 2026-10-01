@@ -105,8 +105,7 @@ const sending = ref(false)
 const sent = ref(false)
 
 // NOTE: this only shows a success screen for now — wire this up to a real
-// email/calendar/CRM backend so bookings are actually received and no two
-// people can book the same doctor's same slot.
+// email/calendar/CRM backend so bookings are actually received 
 const submit = async () => {
   sending.value = true
   await new Promise((r) => setTimeout(r, 900))
@@ -199,26 +198,27 @@ const initials = (name: string) =>
             <!-- Step: Doctor -->
             <div>
               <h2 class="font-serif text-xl font-semibold text-navy">1. Choose your doctor</h2>
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+
+              <div class="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3">
                 <button
                   v-for="d in doctors"
                   :key="d.id"
                   type="button"
-                  class="group flex items-center gap-3 rounded-2xl border p-4 text-left transition-all duration-300"
+                  class="group flex flex-col items-center gap-2 rounded-2xl border p-3 text-center transition-all duration-300 sm:flex-row sm:items-center sm:gap-3 sm:p-4 sm:text-left"
                   :class="form.doctorId === d.id
                     ? 'border-plum bg-lavender-soft shadow-[0_8px_24px_rgba(124,92,196,0.15)]'
                     : 'border-plum/15 hover:border-violet/50 hover:bg-lavender-soft/50'"
                   @click="form.doctorId = d.id"
                 >
-                  <span class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-lavender-soft">
+                  <span class="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-lavender-soft sm:h-12 sm:w-12">
                     <img v-if="d.photo_url" :src="d.photo_url" :alt="d.name" class="h-full w-full object-cover" />
-                    <span v-else class="flex h-full w-full items-center justify-center font-serif text-sm font-semibold text-plum">
+                    <span v-else class="flex h-full w-full items-center justify-center font-serif text-xs font-semibold text-plum sm:text-sm">
                       {{ initials(d.name) }}
                     </span>
                   </span>
                   <span>
-                    <span class="block font-medium text-navy">{{ d.name }}</span>
-                    <span class="mt-0.5 block text-xs text-navy/60">{{ d.role }}</span>
+                    <span class="block text-sm font-medium leading-snug text-navy sm:text-base">{{ d.name }}</span>
+                    <span class="mt-0.5 block text-[0.7rem] text-navy/60 sm:text-xs">{{ d.role }}</span>
                   </span>
                 </button>
 

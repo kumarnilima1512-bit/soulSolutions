@@ -154,12 +154,12 @@ watch(current, async () => {
           </div>
 
           <!-- Playlist -->
-          <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-16 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
             <button
               v-for="(v, i) in videos"
               :key="v.id"
               type="button"
-              class="group overflow-hidden rounded-[1.75rem] bg-white text-left shadow-[0_10px_40px_rgba(63,46,128,0.08)] ring-2 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.22)]"
+              class="group overflow-hidden rounded-[1.25rem] bg-white text-left shadow-[0_10px_40px_rgba(63,46,128,0.08)] ring-2 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.22)] sm:rounded-[1.75rem]"
               :class="selected === i ? 'ring-violet' : 'ring-transparent'"
               :aria-label="`Play: ${v.title}`"
               @click="pick(i)"
@@ -173,15 +173,15 @@ watch(current, async () => {
                   class="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"
                 />
                 <span class="absolute inset-0 flex items-center justify-center bg-navy/20 transition-colors duration-500 group-hover:bg-navy/35">
-                  <span class="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-plum shadow-lg transition-transform duration-500 group-hover:scale-110">
-                    <svg viewBox="0 0 24 24" class="ml-0.5 h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7L8 5Z" /></svg>
+                  <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-plum shadow-lg transition-transform duration-500 group-hover:scale-110 sm:h-14 sm:w-14">
+                    <svg viewBox="0 0 24 24" class="ml-0.5 h-4 w-4 sm:h-6 sm:w-6" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7L8 5Z" /></svg>
                   </span>
                 </span>
               </div>
-              <div class="p-6">
-                <p class="text-[0.65rem] font-medium uppercase tracking-[0.25em] text-plum/60">{{ v.tag }}</p>
-                <h3 class="mt-1 font-serif text-xl font-semibold text-navy">{{ v.title }}</h3>
-                <p class="mt-1 text-sm text-navy/65">{{ v.description }}</p>
+              <div class="p-2.5 sm:p-6">
+                <p class="hidden text-[0.65rem] font-medium uppercase tracking-[0.25em] text-plum/60 sm:block">{{ v.tag }}</p>
+                <h3 class="mt-0.5 font-serif text-sm font-semibold leading-snug text-navy sm:mt-1 sm:text-xl">{{ v.title }}</h3>
+                <p class="mt-1 hidden text-sm text-navy/65 sm:block">{{ v.description }}</p>
               </div>
             </button>
           </div>
