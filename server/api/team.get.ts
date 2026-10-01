@@ -1,6 +1,4 @@
-interface RichText {
-  plain_text: string
-}
+interface RichText { plain_text: string }
 interface NotionFile {
   type: 'file' | 'external'
   file?: { url: string }
@@ -15,10 +13,29 @@ interface NotionPage {
     Bio?: { rich_text: RichText[] }
     Photo?: { files: NotionFile[] }
     Order?: { number: number | null }
+    Availability?: { rich_text: RichText[] }
   }
 }
 
 const text = (arr?: RichText[]) => (arr ?? []).map((t) => t.plain_text).join('')
+
+// Parses a Notion text field like:
+
+function parseAvailability(raw: string): Record<string, string[]> {
+  const result: Record<string, string[]> = {}
+  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean)
+
+  for (const line of lines) {
+    const [dayPart, timesPart] = line.split(':')
+    if (!dayPart || !timesPart) continue
+
+    const day = dayPart.trim()
+    const times = timesPart.split(',').map((t) => t.trim()).filter(Boolean)
+    if (times.length > 0) result[day] = times
+  }
+
+  return result
+}
 
 export default cachedEventHandler(
   async () => {
@@ -30,15 +47,13 @@ export default cachedEventHandler(
     }
 
     try {
-      // Step 1: fetching source id from database
       const db = await $fetch<{ data_sources?: { id: string }[] }>(
         `https://api.notion.com/v1/databases/${config.notionDatabaseId}`,
         { headers },
       )
       const dataSourceId = db.data_sources?.[0]?.id
-      if (!dataSourceId) throw new Error('No data source found on this database')
+      if (!dataSourceId) throw new Error('No data source found')
 
-      // Step 2: fetching active rows sorted by department and order
       const res = await $fetch<{ results: NotionPage[] }>(
         `https://api.notion.com/v1/data_sources/${dataSourceId}/query`,
         {
@@ -57,6 +72,8 @@ export default cachedEventHandler(
       return res.results.map((page) => {
         const p = page.properties
         const photo = p.Photo?.files?.[0]
+        const rawAvailability = text(p.Availability?.rich_text)
+
         return {
           id: page.id,
           department: (p.Department?.select?.name ?? '').toLowerCase(),
@@ -64,6 +81,8 @@ export default cachedEventHandler(
           role: text(p.Role?.rich_text),
           bio: text(p.Bio?.rich_text) || null,
           photo_url: photo?.type === 'file' ? photo.file?.url : (photo?.external?.url ?? null),
+          
+          availability: parseAvailability(rawAvailability),
         }
       })
     } catch (err) {
@@ -71,6 +90,5 @@ export default cachedEventHandler(
       throw createError({ statusCode: 500, statusMessage: 'Could not load team' })
     }
   },
-  
-  { maxAge: 60 * 10, swr: false },
+  { maxAge: 60, swr: false },
 )

@@ -202,7 +202,7 @@ const isListGroup = (g: RenderGroup): g is ListGroup => g.type === 'list' && 'it
           Ready to talk to someone who understands?
         </h2>
         <NuxtLink
-          to="/contact"
+          to="/book"
           class="group relative mt-6 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-plum transition-all duration-300 hover:-translate-y-0.5"
         >
           Book a Joint Consultation

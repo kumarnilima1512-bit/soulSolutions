@@ -177,7 +177,7 @@ const initials = (name: string) =>
           style="transition-delay: 1750ms"
         >
           <NuxtLink
-            to="/contact"
+            to="/book"
             class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(124,92,196,0.5)]"
           >
             Book a Joint Consultation
@@ -416,7 +416,7 @@ const initials = (name: string) =>
             together.
           </h2>
           <NuxtLink
-            to="/contact"
+            to="/book"
             class="group mt-9 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(255,255,255,0.35)]"
           >
             Book a Joint Consultation

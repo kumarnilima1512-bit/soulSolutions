@@ -122,7 +122,7 @@ const { el: gridEl, shown: gridShown } = useReveal()
           Book a joint consultation and we'll help you find the right kind of support together.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/book"
           class="group relative mt-7 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-plum transition-all duration-300 hover:-translate-y-0.5"
         >
           Book a Joint Consultation
