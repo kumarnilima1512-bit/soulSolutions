@@ -3,7 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@vueuse/motion/nuxt'],
+  modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@vueuse/motion/nuxt' , '@nuxtjs/sitemap'],
+
+  site: {
+  url: 'https://soulsolutions.cloud',
+    },
+
   css: ['~/assets/css/main.css'],
   app: {
     head: {
@@ -23,6 +28,8 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+
 
   runtimeConfig: {
   notionToken: '',
