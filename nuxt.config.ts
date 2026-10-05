@@ -13,6 +13,7 @@ export default defineNuxtConfig({
         { name: 'description', content: 'A safe, judgment-free space to talk, reflect and grow.' },
       ],
       link: [
+        { rel: 'icon', type: 'image/png', href: '/images/logo.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
