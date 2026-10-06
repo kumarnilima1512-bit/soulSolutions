@@ -208,9 +208,9 @@ const initials = (name: string) =>
             <div class="absolute -inset-4 -z-0 rounded-t-[999px] rounded-b-[2.5rem] bg-gradient-to-b from-lavender via-peach/60 to-transparent blur-sm" aria-hidden="true" />
             <div class="relative aspect-[4/5] animate-float overflow-hidden rounded-t-[999px] rounded-b-[2.5rem] shadow-[0_30px_80px_rgba(63,46,128,0.18)] max-md:animate-none">
               <img
-                src="/images/about.png"
-                alt="A woman sitting on a hilltop at sunrise with her arms open wide"
-                class="h-full w-full object-cover object-[25%_center]"
+                src="/images/logo.png"
+                alt="Soul Solutions logo"
+                class="h-full w-full object-contain"
                 loading="lazy"
               />
             </div>
