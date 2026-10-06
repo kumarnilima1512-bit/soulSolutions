@@ -56,7 +56,7 @@ const reduceMotion = usePreferredReducedMotion()
           :enter="{ opacity: 1, y: 0, transition: { duration: 800, delay: 1250 } }"
         >
           <a
-            href="#contact"
+            href="/contact"
             class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(124,92,196,0.5)]"
           >
             Start Your Journey

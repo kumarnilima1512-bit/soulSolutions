@@ -15,8 +15,7 @@ body {
 
 /* ---------- Hero image fade mask ---------- */
 .hero-mask {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+    /* No fade on mobile/tablet — video is a compact rounded card there */
 }
 @media (min-width: 1024px) {
   .hero-mask {

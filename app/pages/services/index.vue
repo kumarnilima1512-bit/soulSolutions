@@ -66,12 +66,13 @@ const { el: gridEl, shown: gridShown } = useReveal()
           Services are being added soon.
         </div>
 
-        <div v-else class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- 2 columns on mobile, 2 on sm, 3 on lg -->
+        <div v-else class="grid grid-cols-2 gap-3 sm:gap-8 lg:grid-cols-3">
           <NuxtLink
             v-for="(s, i) in services"
             :key="s.id"
             :to="`/services/${s.slug}`"
-            class="group flex flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_10px_40px_rgba(63,46,128,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.22)]"
+            class="group flex flex-col overflow-hidden rounded-[1.25rem] bg-white shadow-[0_10px_40px_rgba(63,46,128,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.22)] sm:rounded-[1.75rem]"
             :class="gridShown ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'"
             :style="{ transitionDelay: `${i * 100}ms`, transitionDuration: '900ms', transitionProperty: 'opacity, transform' }"
           >
@@ -84,21 +85,21 @@ const { el: gridEl, shown: gridShown } = useReveal()
                 class="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
               />
               <div v-else class="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-peach" aria-hidden="true">
-                <svg viewBox="0 0 24 24" class="h-10 w-10 text-plum/40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="h-8 w-8 text-plum/40 sm:h-10 sm:w-10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                   <path d="M12 3 4.5 6v5.5c0 4.5 3.2 8 7.5 9.5 4.3-1.5 7.5-5 7.5-9.5V6L12 3Z" />
                 </svg>
               </div>
             </div>
 
-            <div class="flex flex-1 flex-col p-7">
-              <h2 class="font-serif text-xl font-semibold text-navy transition-colors duration-300 group-hover:text-plum">
+            <div class="flex flex-1 flex-col p-3.5 sm:p-7">
+              <h2 class="font-serif text-base font-semibold leading-snug text-navy transition-colors duration-300 group-hover:text-plum sm:text-xl">
                 {{ s.name }}
               </h2>
-              <p class="mt-2 flex-1 text-[0.92rem] leading-relaxed text-navy/70">{{ s.shortDescription }}</p>
+              <p class="mt-1.5 flex-1 text-[0.78rem] leading-relaxed text-navy/70 sm:mt-2 sm:text-[0.92rem]">{{ s.shortDescription }}</p>
 
-              <span class="group/link mt-5 inline-flex items-center gap-2 text-sm font-medium text-plum">
+              <span class="group/link mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-plum sm:mt-5 sm:gap-2 sm:text-sm">
                 Learn more
-                <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </span>

@@ -49,10 +49,11 @@ watch(current, (v) => (locked.value = v !== null))
           Photos are coming soon.
         </p>
 
+        <!-- 2 columns on mobile, 2 on sm, 3 on lg -->
         <TransitionGroup
           v-else
           tag="div"
-          class="columns-1 gap-5 sm:columns-2 lg:columns-3"
+          class="columns-2 gap-3 sm:gap-5 lg:columns-3"
           enter-active-class="transition duration-700 ease-out"
           enter-from-class="opacity-0 scale-95"
           leave-active-class="hidden"
@@ -61,7 +62,7 @@ watch(current, (v) => (locked.value = v !== null))
             v-for="(img, i) in items"
             :key="img.id"
             type="button"
-            class="group relative mb-5 block w-full break-inside-avoid overflow-hidden rounded-[1.75rem] shadow-[0_10px_40px_rgba(63,46,128,0.1)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_rgba(124,92,196,0.25)]"
+            class="group relative mb-3 block w-full break-inside-avoid overflow-hidden rounded-[1.1rem] shadow-[0_10px_40px_rgba(63,46,128,0.1)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_rgba(124,92,196,0.25)] sm:mb-5 sm:rounded-[1.75rem]"
             :aria-label="`Open photo${img.caption ? ': ' + img.caption : ''}`"
             @click="open(i)"
           >
@@ -74,7 +75,7 @@ watch(current, (v) => (locked.value = v !== null))
             <span class="absolute inset-0 bg-gradient-to-t from-plum/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             <span
               v-if="img.caption"
-              class="absolute bottom-4 left-5 translate-y-2 text-sm text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+              class="absolute bottom-2.5 left-3 right-3 text-left text-xs text-white opacity-100 transition-all duration-500 sm:bottom-4 sm:left-5 sm:right-auto sm:translate-y-2 sm:text-sm sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
             >
               {{ img.caption }}
             </span>

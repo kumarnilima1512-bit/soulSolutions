@@ -266,7 +266,7 @@ const initials = (name: string) =>
     </section>
 
     <!-- ============ 4. OUR APPROACH ( "Values" layout) ============ -->
-    <section ref="valuesEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
+    <section ref="valuesEl" class="bg-cream px-4 py-16 sm:px-6 lg:px-10 lg:py-24">
       <div class="mx-auto max-w-[1240px]">
         <div class="mx-auto max-w-[640px] text-center" :class="[base, valuesShown ? on : off]">
           <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">Our approach</p>
@@ -275,7 +275,8 @@ const initials = (name: string) =>
           </h2>
         </div>
 
-        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- 2 per row on mobile, 2 on sm, 4 on lg -->
+        <div class="mt-10 grid grid-cols-2 gap-3 sm:mt-14 sm:gap-6 lg:grid-cols-4">
           <div
             v-for="(v, i) in values"
             :key="v.title"
@@ -283,7 +284,7 @@ const initials = (name: string) =>
             :style="{ transitionDelay: `${200 + i * 160}ms` }"
           >
             <article
-              class="group relative h-full overflow-hidden rounded-[1.75rem] bg-white p-7 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)]"
+              class="group relative h-full overflow-hidden rounded-[1.25rem] bg-white p-4 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)] sm:rounded-[1.75rem] sm:p-7"
               @mousemove="onMove"
             >
               <div
@@ -291,17 +292,17 @@ const initials = (name: string) =>
                 aria-hidden="true"
               />
               <div class="relative">
-                <div class="relative h-16 w-16">
+                <div class="relative h-11 w-11 sm:h-16 sm:w-16">
                   <span class="absolute inset-0 animate-ring rounded-full border border-violet/30 max-md:animate-none" aria-hidden="true" />
                   <div
-                    class="relative flex h-16 w-16 items-center justify-center rounded-[45%_55%_50%_50%] text-plum transition-transform duration-500 group-hover:-translate-y-1.5"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-[45%_55%_50%_50%] text-plum transition-transform duration-500 group-hover:-translate-y-1.5 sm:h-16 sm:w-16"
                     :class="v.bg"
                   >
-                    <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="v.icon" />
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 sm:h-8 sm:w-8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="v.icon" />
                   </div>
                 </div>
-                <h3 class="mt-6 font-serif text-2xl font-semibold text-navy">{{ v.title }}</h3>
-                <p class="mt-2 text-[0.95rem] leading-relaxed text-navy/70">{{ v.text }}</p>
+                <h3 class="mt-4 font-serif text-base font-semibold leading-snug text-navy sm:mt-6 sm:text-2xl">{{ v.title }}</h3>
+                <p class="mt-1.5 text-[0.75rem] leading-relaxed text-navy/70 sm:mt-2 sm:text-[0.95rem]">{{ v.text }}</p>
               </div>
             </article>
           </div>
@@ -310,7 +311,7 @@ const initials = (name: string) =>
     </section>
 
     <!-- ============ 5. CARE JOURNEY ( "How we work" layout) ============ -->
-    <section ref="stepsEl" class="bg-white px-6 py-16 lg:px-10 lg:py-24">
+    <section ref="stepsEl" class="bg-white px-4 py-16 sm:px-6 lg:px-10 lg:py-24">
       <div class="mx-auto max-w-[1200px]">
         <div class="mx-auto max-w-[640px] text-center" :class="[base, stepsShown ? on : off]">
           <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">Your care journey</p>
@@ -319,9 +320,11 @@ const initials = (name: string) =>
           </h2>
         </div>
 
-        <div class="relative mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <!-- 4 columns in one row on every screen size (compact on mobile) -->
+        <div class="relative mt-10 grid grid-cols-4 gap-2 sm:mt-14 sm:gap-6 lg:mt-16 lg:gap-8">
+          <!-- Horizontal dashed line (draws left to right) -->
           <div
-            class="absolute left-[10%] right-[10%] top-8 hidden origin-left border-t-2 border-dashed border-violet/30 transition-transform duration-[1800ms] ease-out lg:block"
+            class="absolute left-[12.5%] right-[12.5%] top-5 origin-left border-t-2 border-dashed border-violet/30 transition-transform duration-[1800ms] ease-out sm:top-6 lg:left-[10%] lg:right-[10%] lg:top-8"
             :class="stepsShown ? 'scale-x-100' : 'scale-x-0'"
             style="transition-delay: 400ms"
             aria-hidden="true"
@@ -334,11 +337,11 @@ const initials = (name: string) =>
             :class="[base, stepsShown ? on : off]"
             :style="{ transitionDelay: `${300 + i * 220}ms` }"
           >
-            <div class="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-lavender to-white font-serif text-xl font-semibold text-plum shadow-[0_10px_30px_rgba(124,92,196,0.2)] ring-4 ring-white">
+            <div class="relative mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-lavender to-white font-serif text-sm font-semibold text-plum shadow-[0_10px_30px_rgba(124,92,196,0.2)] ring-4 ring-white sm:h-12 sm:w-12 sm:text-base lg:h-16 lg:w-16 lg:text-xl">
               {{ s.n }}
             </div>
-            <h3 class="mt-6 font-serif text-2xl font-semibold text-navy">{{ s.title }}</h3>
-            <p class="mx-auto mt-2 max-w-[260px] text-[0.95rem] leading-relaxed text-navy/70">{{ s.text }}</p>
+            <h3 class="mt-3 font-serif text-[0.78rem] font-semibold leading-tight text-navy sm:mt-4 sm:text-lg lg:mt-6 lg:text-2xl">{{ s.title }}</h3>
+            <p class="mx-auto mt-1.5 max-w-[260px] text-[0.62rem] leading-snug text-navy/70 sm:mt-2 sm:text-sm sm:leading-relaxed lg:text-[0.95rem]">{{ s.text }}</p>
           </div>
         </div>
       </div>
@@ -358,10 +361,14 @@ const initials = (name: string) =>
           Our team details will be available here shortly.
         </p>
 
-        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Mobile: horizontal swipe slider | sm+: grid -->
+        <div
+          class="-mx-6 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-6 pb-8 pt-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 sm:pt-0 lg:grid-cols-3"
+        >
           <div
             v-for="(m, i) in groupedTeam"
             :key="m.id"
+            class="w-[78%] shrink-0 snap-center sm:w-auto sm:shrink"
             :class="[base, teamShown ? on : off]"
             :style="{ transitionDelay: `${150 + i * 140}ms` }"
           >
@@ -391,6 +398,14 @@ const initials = (name: string) =>
             </article>
           </div>
         </div>
+
+        <!-- Swipe hint (mobile only) -->
+        <p v-if="groupedTeam.length > 1" class="mt-1 flex items-center justify-center gap-1.5 text-xs text-plum/60 sm:hidden">
+          Swipe to meet the team
+          <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </p>
       </div>
     </section>
 
