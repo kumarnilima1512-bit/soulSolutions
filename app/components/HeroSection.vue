@@ -45,8 +45,9 @@ const reduceMotion = usePreferredReducedMotion()
           :initial="{ opacity: 0, y: 16 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 800, delay: 950 } }"
         >
-          A safe, judgment-free space to talk, reflect and grow. We’re here to support your
-          mental well-being — one step at a time.
+          Where the science of psychiatry
+          meets the human touch.
+          Soul Solutions brings psychiatrists and clinical psychologists together, so your care is understood deeply, planned jointly and delivered as one
         </p>
 
         <div
@@ -93,8 +94,8 @@ const reduceMotion = usePreferredReducedMotion()
         <video
           v-else
           class="h-full w-full object-cover object-[70%_center]"
-          src="/video/hero.mp4"
-          poster="/images/hero.png"
+          src="/images/about.png"
+          poster="/images/about.png"
           autoplay
           muted
           loop
