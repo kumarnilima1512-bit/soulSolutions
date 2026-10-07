@@ -4,8 +4,8 @@ const links = [
   { label: 'Know About Us', to: '/about' },
   { label: 'Approaches', to: '/approaches' },
   { label: 'Services', to: '/services' },
-  { label: 'Activity', to: '/activity' },
-  { label: 'Mental Health', to: '/blog' },
+  { label: 'Activity & Programme', to: '/activity' },
+  { label: 'Mental Health Issues', to: '/blog' },
   { label: 'Testimonials', to: '/testimonials' },
   { label: 'Gallery', to: '/gallery' },
   { label: 'Videos', to: '/videos' },
@@ -22,6 +22,29 @@ const scrolled = computed(() => y.value > 24)
 const open = ref(false)
 onKeyStroke('Escape', () => (open.value = false))
 watch(() => route.fullPath, () => (open.value = false))
+
+// Horizontal scroll area
+const scroller = ref<HTMLElement | null>(null)
+
+// Mouse wheel -> horizontal scroll
+const onWheel = (e: WheelEvent) => {
+  const el = scroller.value
+  if (!el) return
+  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+    el.scrollLeft += e.deltaY
+    e.preventDefault()
+  }
+}
+
+// Active link to view link
+const scrollActiveIntoView = () => {
+  nextTick(() => {
+    const active = scroller.value?.querySelector<HTMLElement>('[data-active="true"]')
+    active?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' })
+  })
+}
+onMounted(scrollActiveIntoView)
+watch(() => route.path, scrollActiveIntoView)
 </script>
 
 <template>
@@ -34,10 +57,10 @@ watch(() => route.fullPath, () => (open.value = false))
     "
   >
     <nav
-      class="relative mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 xl:px-8"
+      class="relative mx-auto flex max-w-[1500px] items-center gap-4 px-4 sm:px-6 xl:gap-6 xl:px-8"
       aria-label="Main navigation"
     >
-      <!-- Logo -->
+      <!-- Logo (never shrinks) -->
       <NuxtLink
         to="/"
         class="flex shrink-0 items-center gap-2.5"
@@ -49,7 +72,7 @@ watch(() => route.fullPath, () => (open.value = false))
         <img
           src="/images/logo.png"
           alt="Soul Solutions logo"
-          class="h-18 w-auto sm:h-12 xl:h-20"
+          class="h-14 w-auto sm:h-16 xl:h-20"
         />
         <span class="flex flex-col leading-none">
           <span class="font-serif text-[1.35rem] font-semibold text-navy sm:text-[1.6rem] xl:text-[1.8rem]">
@@ -61,34 +84,34 @@ watch(() => route.fullPath, () => (open.value = false))
         </span>
       </NuxtLink>
 
-      <!-- Desktop links (no overflow clipping) -->
-      <div class="hidden min-w-0 xl:flex xl:flex-1 xl:justify-center">
-        <ul class="flex items-center gap-5 2xl:gap-8">
-          <li
-            v-for="(link, i) in links"
-            :key="link.label"
-            v-motion
-            :initial="{ opacity: 0 }"
-            :enter="{ opacity: 1, transition: { duration: 600, delay: 250 + i * 70 } }"
-            class="shrink-0"
-          >
-            <NuxtLink
-              :to="link.to"
-              class="group relative inline-block whitespace-nowrap py-1 text-[0.88rem] text-navy/80 transition-colors duration-300 hover:text-navy 2xl:text-[0.92rem]"
-              :class="isActive(link.to) && 'font-medium text-navy'"
-            >
-              {{ link.label }}
-              <span
-                class="absolute -bottom-0.5 left-0 h-[2px] w-full origin-left rounded-full bg-plum transition-transform duration-300 ease-out group-hover:scale-x-100"
-                :class="isActive(link.to) ? 'scale-x-100' : 'scale-x-0'"
-              />
-            </NuxtLink>
-          </li>
-        </ul>
+      <!-- Desktop links: side scroll, between logo and buttons-->
+      <div class="relative hidden min-w-0 flex-1 xl:block">
+        <div
+          ref="scroller"
+          class="nav-scroll overflow-x-auto overflow-y-hidden px-8 py-2"
+          @wheel="onWheel"
+        >
+          <ul class="mx-auto flex w-max items-center gap-7">
+            <li v-for="link in links" :key="link.label" class="shrink-0">
+              <NuxtLink
+                :to="link.to"
+                :data-active="isActive(link.to)"
+                class="group relative inline-block whitespace-nowrap py-1 text-[0.9rem] text-navy/80 transition-colors duration-300 hover:text-navy"
+                :class="isActive(link.to) && 'font-medium text-navy'"
+              >
+                {{ link.label }}
+                <span
+                  class="absolute -bottom-0.5 left-0 h-[2px] w-full origin-left rounded-full bg-plum transition-transform duration-300 ease-out group-hover:scale-x-100"
+                  :class="isActive(link.to) ? 'scale-x-100' : 'scale-x-0'"
+                />
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Right side -->
-      <div class="flex shrink-0 items-center gap-3">
+      <div class="ml-auto flex shrink-0 items-center gap-3 xl:ml-0">
         <NuxtLink
           to="/book"
           class="hidden whitespace-nowrap rounded-full bg-plum px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_30px_rgba(124,92,196,0.55)] sm:inline-block"
@@ -99,7 +122,7 @@ watch(() => route.fullPath, () => (open.value = false))
           Book a Session
         </NuxtLink>
 
-        <!-- Hamburger (shows below xl) -->
+        <!-- Hamburger (bottom of xl) -->
         <button
           type="button"
           class="rounded-full p-2 text-navy xl:hidden"
@@ -149,3 +172,17 @@ watch(() => route.fullPath, () => (open.value = false))
     </nav>
   </header>
 </template>
+
+<style scoped>
+/* Hidden Scrollbar  */
+.nav-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+</style>
