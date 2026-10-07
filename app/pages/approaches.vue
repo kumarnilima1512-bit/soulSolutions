@@ -34,8 +34,8 @@ const word = 'mr-[0.26em] inline-block transition-all duration-[900ms] ease-out'
 /* ---------- Hero ---------- */
 const heroShown = ref(false)
 onMounted(() => setTimeout(() => (heroShown.value = true), 80))
-const line1 = ['Where', 'the', 'science', 'of', 'psychiatry']
-const line2 = ['meets', 'the', 'human', 'touch.']
+const line1 = ['Two', 'minds,', 'one', 'plan,']
+const line2 = ['built', 'around', 'you.']
 
 /* ---------- Stats ---------- */
 const stats = [
@@ -142,7 +142,7 @@ const initials = (name: string) =>
         </nav>
 
         <h1 class="mt-6 font-serif text-[clamp(2.4rem,5.6vw,4.6rem)] font-semibold leading-[1.08] text-navy">
-          <span class="sr-only">Where the science of psychiatry meets the human touch.</span>
+          <span class="sr-only">Two minds, one plan, built around you.</span>
           <span aria-hidden="true">
             <span
               v-for="(w, i) in line1"
@@ -167,8 +167,8 @@ const initials = (name: string) =>
           :class="[base, heroShown ? on : off]"
           style="transition-delay: 1500ms"
         >
-          Soul Solutions brings psychiatrists and clinical psychologists together, so your care is
-          understood deeply, planned jointly and delivered as one.
+            Every journey begins with a joint consultation, where a psychiatrist and a clinical
+  psychologist understand you early, plan together and review your progress along the way.
         </p>
 
         <div
