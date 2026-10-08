@@ -53,6 +53,11 @@ const { data: members, error: membersError } = await useFetch<Member[]>('/api/ab
   default: () => [],
 })
 
+// Development only: shows the real reason when the API fails
+const errorHint = computed(() =>
+  import.meta.dev ? (membersError.value as any)?.statusMessage || (membersError.value as any)?.message || '' : '',
+)
+
 const founders = computed(() => (members.value ?? []).filter((m) => m.is_founder))
 const team = computed(() => (members.value ?? []).filter((m) => !m.is_founder))
 
@@ -169,6 +174,7 @@ onBeforeUnmount(() => {
 
         <p v-if="membersError" class="mt-12 text-center text-navy/60">
           Our founders' details will be available here shortly.
+          <span v-if="errorHint" class="mt-2 block text-xs text-red-500">[dev] {{ errorHint }}</span>
         </p>
 
         <div class="mt-10 grid gap-6 sm:mt-14 md:grid-cols-2 lg:gap-8">
@@ -239,14 +245,14 @@ onBeforeUnmount(() => {
     <section ref="teamEl" class="bg-lavender-soft px-6 py-16 lg:px-10 lg:py-24">
       <div class="mx-auto max-w-[1240px]">
         <div class="mx-auto max-w-[640px] text-center" :class="[base, teamShown ? on : off]">
-          <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">Our team</p>
-          <h2 class="mt-4 font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
-            The people who <em class="font-medium italic">care for you</em>
+          <h2 class="font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
+            Our team
           </h2>
         </div>
 
         <p v-if="membersError" class="mt-12 text-center text-navy/60">
           Our team details will be available here shortly.
+          <span v-if="errorHint" class="mt-2 block text-xs text-red-500">[dev] {{ errorHint }}</span>
         </p>
 
         <!-- Mobile: horizontal swipe slider | sm+: grid -->

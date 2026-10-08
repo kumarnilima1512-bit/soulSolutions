@@ -1,13 +1,13 @@
 // server/api/about-team.get.ts
 // Reads founders and team members for the About page from its own Notion database.
-// Returns one flat list; the pages split it using the `is_founder` flag.
+// Property names are matched case-insensitively, and visibility/sorting are done in code,
+// so small naming differences in Notion do not break the page.
 
 interface NotionRichText {
   plain_text: string
 }
 
 interface NotionFile {
-  url?: string
   file?: { url: string }
   external?: { url: string }
 }
@@ -24,9 +24,22 @@ export interface TeamMember {
   specializations: string[]
   bio: string | null
   photo_url: string | null
+  order: number
 }
 
-/* ---------- Property readers (all safe against missing values) ---------- */
+/* ---------- Property lookup (case-insensitive, ignores extra spaces) ---------- */
+const norm = (s: string) => s.trim().toLowerCase()
+
+const getProp = (props: Record<string, any>, name: string) => {
+  const key = Object.keys(props).find((k) => norm(k) === norm(name))
+  return key ? props[key] : undefined
+}
+
+// The title property is found by type, so it works whatever the column is called.
+const getTitleProp = (props: Record<string, any>) =>
+  Object.values(props).find((p: any) => p?.type === 'title')
+
+/* ---------- Property readers ---------- */
 const joinText = (parts?: NotionRichText[]) => (parts ?? []).map((t) => t.plain_text).join('')
 
 const readTitle = (p: any) => joinText(p?.title).trim()
@@ -35,30 +48,38 @@ const readSelect = (p: any) => (p?.select?.name as string | undefined) ?? ''
 const readMulti = (p: any) => ((p?.multi_select ?? []) as { name: string }[]).map((o) => o.name)
 const readNumber = (p: any) => (typeof p?.number === 'number' ? (p.number as number) : null)
 
-// One item per line (use Shift+Enter inside a Notion text cell)
-const readLines = (p: any) =>
-  readText(p)
-    .split('\n')
+// One item per line (Shift+Enter inside a Notion text cell). Commas also work.
+const readList = (p: any) => {
+  // Works whether the column is a text cell or a multi-select
+  if (p?.type === 'multi_select') return readMulti(p)
+  return readText(p)
+    .split(/\n|;/)
     .map((s) => s.trim())
     .filter(Boolean)
+}
 
 const readPhoto = (p: any): string | null => {
   const f = (p?.files?.[0] ?? null) as NotionFile | null
-  if (!f) return null
-  return f.file?.url ?? f.external?.url ?? null
+  return f?.file?.url ?? f?.external?.url ?? null
 }
 
 /* ---------- Handler ---------- */
-// Notion-hosted file URLs expire after about one hour,
-// so the cache lifetime is kept well below that.
+// Notion-hosted file URLs expire after about one hour, so the cache is kept short.
+// The cache is bypassed in development so changes in Notion show up right away.
 export default defineCachedEventHandler(
   async () => {
     const config = useRuntimeConfig()
     const token = config.notionToken as string
     const databaseId = config.notionAboutDbId as string
 
-    if (!token || !databaseId) {
-      throw createError({ statusCode: 500, statusMessage: 'About database is not configured' })
+    if (!token) {
+      throw createError({ statusCode: 500, statusMessage: 'Missing config: notionToken' })
+    }
+    if (!databaseId) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Missing config: notionAboutDbId (check .env and nuxt.config runtimeConfig, then restart the dev server)',
+      })
     }
 
     const rows: any[] = []
@@ -72,14 +93,11 @@ export default defineCachedEventHandler(
           'Notion-Version': '2022-06-28',
           'Content-Type': 'application/json',
         },
-        body: {
-          page_size: 100,
-          start_cursor: cursor,
-          filter: { property: 'Visible', checkbox: { equals: true } },
-          sorts: [{ property: 'Order', direction: 'ascending' }],
-        },
-      }).catch(() => {
-        throw createError({ statusCode: 502, statusMessage: 'Could not reach Notion' })
+        body: { page_size: 100, start_cursor: cursor },
+      }).catch((e: any) => {
+        const detail = e?.data?.message || e?.message || 'Unknown error'
+        console.error('[about-team] Notion error:', detail)
+        throw createError({ statusCode: 502, statusMessage: `Notion: ${detail}` })
       })
 
       rows.push(...res.results)
@@ -88,25 +106,45 @@ export default defineCachedEventHandler(
 
     const members: TeamMember[] = rows
       .map((page) => {
-        const p = page.properties
-        const name = readTitle(p.Name)
+        const p = page.properties as Record<string, any>
+
+        // Treat a row as visible unless the Visible checkbox exists and is unticked
+        const visibleProp = getProp(p, 'Visible')
+        const visible = visibleProp ? visibleProp.checkbox === true : true
+
+        const name = readTitle(getProp(p, 'Name')) || readTitle(getTitleProp(p))
+
         return {
-          id: page.id as string,
-          name,
-          role: readText(p.Role),
-          department: readSelect(p.Department).toLowerCase() === 'psychology' ? 'psychology' : 'psychiatry',
-          is_founder: readSelect(p.Type).toLowerCase() === 'founder',
-          qualifications: readText(p.Qualifications),
-          experience_years: readNumber(p.Experience),
-          institutions: readLines(p.Institutions),
-          specializations: readMulti(p.Specializations),
-          bio: readText(p.Bio) || null,
-          photo_url: readPhoto(p.Photo),
-        } satisfies TeamMember
+          visible,
+          member: {
+            id: page.id as string,
+            name,
+            role: readText(getProp(p, 'Role')),
+            department: norm(readSelect(getProp(p, 'Department'))) === 'psychology' ? 'psychology' : 'psychiatry',
+            is_founder: norm(readSelect(getProp(p, 'Type'))) === 'founder',
+            qualifications: readText(getProp(p, 'Qualifications')),
+            experience_years: readNumber(getProp(p, 'Experience')),
+            institutions: readList(getProp(p, 'Institutions')),
+            specializations: readList(getProp(p, 'Specializations')),
+            bio: readText(getProp(p, 'Bio')) || null,
+            photo_url: readPhoto(getProp(p, 'Photo')),
+            order: readNumber(getProp(p, 'Order')) ?? 9999,
+          } satisfies TeamMember,
+        }
       })
-      .filter((m) => m.name)
+      .filter((r) => r.visible && r.member.name)
+      .map((r) => r.member)
+      .sort((a, b) => a.order - b.order)
+
+    if (import.meta.dev) {
+      console.log(`[about-team] Notion rows: ${rows.length}, shown: ${members.length}`)
+    }
 
     return members
   },
-  { name: 'about-team', maxAge: 60 * 20 },
+  {
+    name: 'about-team',
+    maxAge: 60 * 20,
+    shouldBypassCache: () => import.meta.dev,
+  },
 )
