@@ -19,6 +19,7 @@ interface Doctor {
   bio: string | null
   photo_url: string | null
   availability: Record<string, string[]>
+  fees: { offline: number | null; online: number | null; international: number | null }
 }
 
 const { data: services } = await useFetch<Service[]>('/api/services', { default: () => [] })
@@ -40,6 +41,13 @@ const form = reactive({
   phone: '',
   message: '',
 })
+
+// Preselect service/doctor when arriving from a service page: /book?service=...&doctor=...
+const route = useRoute()
+if (typeof route.query.service === 'string') form.serviceId = route.query.service
+if (typeof route.query.doctor === 'string' && doctors.value.some((d) => d.id === route.query.doctor)) {
+  form.doctorId = route.query.doctor
+}
 
 const selectedDoctor = computed(() => doctors.value.find((d) => d.id === form.doctorId) ?? null)
 
@@ -75,7 +83,7 @@ const availableDates = computed(() => {
     if (!availableDays.includes(weekday)) continue
 
     result.push({
-      value: d.toISOString().split('T')[0]!,
+      value: d.toLocaleDateString('en-CA'), // YYYY-MM-DD in local time
       weekday: d.toLocaleDateString('en-US', { weekday: 'short' }),
       day: d.toLocaleDateString('en-US', { day: 'numeric' }),
       month: d.toLocaleDateString('en-US', { month: 'short' }),
@@ -84,17 +92,43 @@ const availableDates = computed(() => {
   return result
 })
 
-// Only the times that belong to the specific weekday of the selected date —
-// this is the fix: a Monday-only time no longer shows up under Wednesday.
+// Only the times that belong to the specific weekday of the selected date.
 const timeSlotsForDoctor = computed(() => {
   if (!selectedDoctor.value || !form.date) return []
-  const weekday = new Date(form.date).toLocaleDateString('en-US', { weekday: 'long' })
+  const weekday = new Date(`${form.date}T00:00:00`).toLocaleDateString('en-US', { weekday: 'long' })
   return selectedDoctor.value.availability[weekday] ?? []
 })
 
+/* ---------- Session type + fee ---------- */
+const rupee = (n: number | null) => (n == null ? '' : `₹ ${n.toLocaleString('en-IN')}`)
+
+const feeFor = (m: 'Online' | 'In-person') => {
+  const f = selectedDoctor.value?.fees
+  if (!f) return null
+  return m === 'Online' ? f.online : f.offline
+}
+
+// If a doctor has fees set but no offline fee, they don't see patients in clinic.
+const modeAvailable = (m: 'Online' | 'In-person') => {
+  const f = selectedDoctor.value?.fees
+  if (!f) return true
+  const hasAnyFee = f.online != null || f.offline != null
+  return !hasAnyFee || feeFor(m) != null
+}
+
+watch(
+  () => [form.doctorId, form.mode],
+  () => {
+    if (!modeAvailable(form.mode)) form.mode = form.mode === 'Online' ? 'In-person' : 'Online'
+  },
+  { immediate: true },
+)
+
+const selectedFee = computed(() => feeFor(form.mode))
+
 const formatDateLabel = (value: string) =>
   value
-    ? new Date(value).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
+    ? new Date(`${value}T00:00:00`).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
     : ''
 
 const canSubmit = computed(
@@ -105,7 +139,7 @@ const sending = ref(false)
 const sent = ref(false)
 
 // NOTE: this only shows a success screen for now — wire this up to a real
-// email/calendar/CRM backend so bookings are actually received 
+// email/calendar/CRM backend so bookings are actually received.
 const submit = async () => {
   sending.value = true
   await new Promise((r) => setTimeout(r, 900))
@@ -122,12 +156,12 @@ const initials = (name: string) =>
 <template>
   <main>
     <!-- ============ HERO ============ -->
-    <section class="relative isolate overflow-hidden bg-gradient-to-br from-[#fff6ee] via-cream to-[#f4effb] px-6 pb-14 pt-32 sm:pt-40 lg:px-10 lg:pb-16">
+    <section class="relative isolate overflow-hidden bg-gradient-to-br from-[#f2ede1] via-cream to-[#edf5f0] px-6 pb-14 pt-32 sm:pt-40 lg:px-10 lg:pb-16">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div class="absolute -left-24 top-10 h-72 w-72 animate-blob-a rounded-full bg-lavender/80 blur-3xl max-md:animate-none" />
         <div class="absolute -right-20 top-1/3 h-80 w-80 animate-blob-b rounded-full bg-peach/70 blur-3xl max-md:animate-none" />
         <span class="absolute left-[14%] top-[32%] h-2 w-2 animate-twinkle rounded-full bg-violet/50" />
-        <span class="absolute right-[18%] top-[26%] h-1.5 w-1.5 animate-twinkle rounded-full bg-[#e89a7a]/70 [animation-delay:2s]" />
+        <span class="absolute right-[18%] top-[26%] h-1.5 w-1.5 animate-twinkle rounded-full bg-[#c9b88c]/70 [animation-delay:2s]" />
       </div>
 
       <div class="mx-auto max-w-[720px] text-center">
@@ -143,7 +177,7 @@ const initials = (name: string) =>
           style="transition-delay: 200ms"
         >
           Choose your doctor,
-          <em class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text font-medium italic text-transparent">
+          <em class="animate-shimmer bg-[linear-gradient(90deg,#1e4d46,#7da88e,#c9b88c,#7da88e,#1e4d46)] bg-[length:200%_auto] bg-clip-text font-medium italic text-transparent">
             find a time that works.
           </em>
         </h1>
@@ -160,7 +194,7 @@ const initials = (name: string) =>
     <!-- ============ FORM ============ -->
     <section class="bg-cream px-6 pb-24 lg:px-10">
       <div class="mx-auto max-w-[820px]">
-        <div class="relative overflow-hidden rounded-[2rem] bg-white p-7 shadow-[0_20px_70px_rgba(63,46,128,0.1)] sm:p-10">
+        <div class="relative overflow-hidden rounded-[2rem] bg-white p-7 shadow-[0_20px_70px_rgba(30,77,70,0.1)] sm:p-10">
           <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-blob-a rounded-full bg-violet/10 blur-3xl max-md:animate-none" aria-hidden="true" />
 
           <!-- ===== Success ===== -->
@@ -206,7 +240,7 @@ const initials = (name: string) =>
                   type="button"
                   class="group flex flex-col items-center gap-2 rounded-2xl border p-3 text-center transition-all duration-300 sm:flex-row sm:items-center sm:gap-3 sm:p-4 sm:text-left"
                   :class="form.doctorId === d.id
-                    ? 'border-plum bg-lavender-soft shadow-[0_8px_24px_rgba(124,92,196,0.15)]'
+                    ? 'border-plum bg-lavender-soft shadow-[0_8px_24px_rgba(30,77,70,0.15)]'
                     : 'border-plum/15 hover:border-violet/50 hover:bg-lavender-soft/50'"
                   @click="form.doctorId = d.id"
                 >
@@ -280,17 +314,26 @@ const initials = (name: string) =>
 
               <fieldset class="mt-5">
                 <legend class="text-sm font-medium text-navy/80">Session type</legend>
-                <div class="mt-2 flex gap-3">
+                <div class="mt-2 flex flex-wrap gap-3">
                   <label
-                    v-for="m in ['Online', 'In-person']"
+                    v-for="m in (['Online', 'In-person'] as const)"
                     :key="m"
-                    class="cursor-pointer rounded-full border px-5 py-2.5 text-sm transition-all duration-300"
-                    :class="form.mode === m ? 'border-plum bg-plum text-white' : 'border-plum/20 bg-white text-navy/75 hover:border-violet'"
+                    class="rounded-full border px-5 py-2.5 text-sm transition-all duration-300"
+                    :class="[
+                      !modeAvailable(m)
+                        ? 'cursor-not-allowed border-plum/10 bg-white text-navy/30'
+                        : form.mode === m
+                          ? 'cursor-pointer border-plum bg-plum text-white'
+                          : 'cursor-pointer border-plum/20 bg-white text-navy/75 hover:border-violet',
+                    ]"
                   >
-                    <input v-model="form.mode" type="radio" name="mode" :value="m" class="sr-only" />
-                    {{ m }}
+                    <input v-model="form.mode" type="radio" name="mode" :value="m" :disabled="!modeAvailable(m)" class="sr-only" />
+                    {{ m }}<span v-if="feeFor(m) != null" class="ml-1.5 opacity-80">· {{ rupee(feeFor(m)) }}</span>
                   </label>
                 </div>
+                <p v-if="selectedFee != null" class="mt-3 text-xs text-navy/55">
+                  Consultation fee: <strong class="text-plum">{{ rupee(selectedFee) }}</strong>. Advance payment is required to confirm your slot.
+                </p>
               </fieldset>
             </div>
 

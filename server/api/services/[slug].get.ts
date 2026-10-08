@@ -20,7 +20,15 @@ interface NotionPage {
     Slug?: { rich_text: RichText[] }
     ShortDescription?: { rich_text: RichText[] }
     Image?: { files: NotionFile[] }
+    Consultants?: { rich_text: RichText[] }
   }
+}
+interface TeamMember {
+  id: string
+  name: string
+  role: string
+  photo_url: string | null
+  fees: { offline: number | null; online: number | null; international: number | null }
 }
 
 const text = (arr?: RichText[]) => (arr ?? []).map((t) => t.plain_text).join('')
@@ -89,16 +97,39 @@ export default cachedEventHandler(
       if (!page) throw createError({ statusCode: 404, statusMessage: 'Service not found' })
 
       const p = page.properties
+
       const blocksRes = await $fetch<{ results: NotionBlock[] }>(
         `https://api.notion.com/v1/blocks/${page.id}/children?page_size=100`,
         { headers: notionHeaders() },
       )
 
+      const wanted = text(p.Consultants?.rich_text)
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean)
+
+      let consultants: TeamMember[] = []
+      if (wanted.length > 0) {
+        const team = await $fetch<TeamMember[]>('/api/team')
+        consultants = wanted
+          .map((w) => team.find((t) => t.name.toLowerCase().includes(w)))
+          .filter((t): t is TeamMember => !!t)
+          .map((t) => ({
+            id: t.id,
+            name: t.name,
+            role: t.role,
+            photo_url: t.photo_url,
+            fees: t.fees,
+          }))
+      }
+
       return {
+        id: page.id,
         name: text(p.Name?.title),
         shortDescription: text(p.ShortDescription?.rich_text),
         image: fileUrl(p.Image?.files?.[0]),
         blocks: blocksRes.results.map(mapBlock).filter(Boolean),
+        consultants,
       }
     } catch (err: any) {
       if (err?.statusCode === 404) throw err
