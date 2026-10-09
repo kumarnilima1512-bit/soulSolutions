@@ -16,8 +16,8 @@ export interface TeamMember {
   id: string
   name: string
   role: string
-  department: 'psychiatry' | 'psychology'
-  is_founder: boolean
+  department: 'psychiatry' | 'psychology' | ''
+  type: 'founder' | 'mentor' | 'professional'
   qualifications: string
   experience_years: number | null
   institutions: string[]
@@ -47,6 +47,20 @@ const readText = (p: any) => joinText(p?.rich_text).trim()
 const readSelect = (p: any) => (p?.select?.name as string | undefined) ?? ''
 const readMulti = (p: any) => ((p?.multi_select ?? []) as { name: string }[]).map((o) => o.name)
 const readNumber = (p: any) => (typeof p?.number === 'number' ? (p.number as number) : null)
+
+const readType = (p: any): TeamMember['type'] => {
+  const t = norm(readSelect(p))
+  if (t === 'founder') return 'founder'
+  if (t === 'mentor') return 'mentor'
+  return 'professional' // "Professional", "Team" or empty
+}
+
+const readDepartment = (p: any): TeamMember['department'] => {
+  const d = norm(readSelect(p))
+  if (d === 'psychology') return 'psychology'
+  if (d === 'psychiatry') return 'psychiatry'
+  return ''
+}
 
 // One item per line (Shift+Enter inside a Notion text cell). Commas also work.
 const readList = (p: any) => {
@@ -120,8 +134,8 @@ export default defineCachedEventHandler(
             id: page.id as string,
             name,
             role: readText(getProp(p, 'Role')),
-            department: norm(readSelect(getProp(p, 'Department'))) === 'psychology' ? 'psychology' : 'psychiatry',
-            is_founder: norm(readSelect(getProp(p, 'Type'))) === 'founder',
+            department: readDepartment(getProp(p, 'Department')),
+            type: readType(getProp(p, 'Type')),
             qualifications: readText(getProp(p, 'Qualifications')),
             experience_years: readNumber(getProp(p, 'Experience')),
             institutions: readList(getProp(p, 'Institutions')),
