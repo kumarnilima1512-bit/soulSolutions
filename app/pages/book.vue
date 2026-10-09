@@ -29,6 +29,25 @@ const { data: doctors } = await useFetch<Doctor[]>('/api/team', { default: () =>
 const heroShown = ref(false)
 onMounted(() => setTimeout(() => (heroShown.value = true), 80))
 
+/* ---------- Safe date helpers ----------
+   Build/parse YYYY-MM-DD by hand so every browser (including mobile
+   Safari) behaves the same way. */
+const pad = (n: number) => String(n).padStart(2, '0')
+const toISODate = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+const parseISODate = (s: string) => {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y!, m! - 1, d!)
+}
+const weekdayOf = (s: string) =>
+  parseISODate(s).toLocaleDateString('en-US', { weekday: 'long' })
+
+// "Today" is set only in the browser, so the server and the phone can
+// never disagree about which date it is.
+const now = ref<Date | null>(null)
+onMounted(() => {
+  now.value = new Date()
+})
+
 /* ---------- Form state ---------- */
 const form = reactive({
   serviceId: '',
@@ -67,25 +86,24 @@ watch(
   },
 )
 
-// Only weekdays that appear as keys in this doctor's availability object.
+// Next 30 days, keeping only weekdays this doctor is available on.
 const availableDates = computed(() => {
-  if (!selectedDoctor.value) return []
+  if (!selectedDoctor.value || !now.value) return []
   const availableDays = Object.keys(selectedDoctor.value.availability)
   if (availableDays.length === 0) return []
 
   const result: { value: string; weekday: string; day: string; month: string }[] = []
-  const today = new Date()
 
   for (let i = 0; i < 30; i++) {
-    const d = new Date(today)
-    d.setDate(today.getDate() + i)
+    const d = new Date(now.value)
+    d.setDate(now.value.getDate() + i)
     const weekday = d.toLocaleDateString('en-US', { weekday: 'long' })
     if (!availableDays.includes(weekday)) continue
 
     result.push({
-      value: d.toLocaleDateString('en-CA'), // YYYY-MM-DD in local time
+      value: toISODate(d),
       weekday: d.toLocaleDateString('en-US', { weekday: 'short' }),
-      day: d.toLocaleDateString('en-US', { day: 'numeric' }),
+      day: String(d.getDate()),
       month: d.toLocaleDateString('en-US', { month: 'short' }),
     })
   }
@@ -95,8 +113,7 @@ const availableDates = computed(() => {
 // Only the times that belong to the specific weekday of the selected date.
 const timeSlotsForDoctor = computed(() => {
   if (!selectedDoctor.value || !form.date) return []
-  const weekday = new Date(`${form.date}T00:00:00`).toLocaleDateString('en-US', { weekday: 'long' })
-  return selectedDoctor.value.availability[weekday] ?? []
+  return selectedDoctor.value.availability[weekdayOf(form.date)] ?? []
 })
 
 /* ---------- Session type + fee ---------- */
@@ -128,7 +145,7 @@ const selectedFee = computed(() => feeFor(form.mode))
 
 const formatDateLabel = (value: string) =>
   value
-    ? new Date(`${value}T00:00:00`).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
+    ? parseISODate(value).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
     : ''
 
 const canSubmit = computed(
