@@ -5,7 +5,6 @@ const form = reactive({ name: '', email: '', phone: '', mode: 'Online', message:
 const sending = ref(false)
 const sent = ref(false)
 
-
 const submit = async () => {
   sending.value = true
   await new Promise((r) => setTimeout(r, 900))
@@ -13,12 +12,40 @@ const submit = async () => {
   sent.value = true
 }
 
-// NOTE: placeholder. Real details will be set lateer.
 const info = [
-  { label: 'Call us', value: '+91 00000 00000', href: 'tel:+910000000000', bg: 'bg-lavender', icon: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>' },
-  { label: 'Email us', value: 'hello@yourdomain.com', href: 'mailto:hello@yourdomain.com', bg: 'bg-peach', icon: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/>' },
-  { label: 'Visit us', value: 'Your address, Kolkata', href: '', bg: 'bg-mint', icon: '<path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>' },
-  { label: 'Hours', value: 'Mon – Sat, 10am – 7pm', href: '', bg: 'bg-sky', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
+  {
+    label: 'Call us',
+    value: '+91 98746 89332',
+    href: 'tel:+919874689332',
+    external: false,
+    bg: 'bg-lavender',
+    icon: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>',
+  },
+  {
+    label: 'Email us',
+    value: 'soulsolutions.holisticrefuge@gmail.com',
+    href: 'mailto:soulsolutions.holisticrefuge@gmail.com',
+    external: false,
+    bg: 'bg-peach',
+    icon: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/>',
+  },
+  {
+    label: 'Visit us',
+    value: 'Soul Solutions, Flat-5B, Sudarshan Apartment, B/38, Atabagan, Garia, Kolkata - 700084',
+    note: 'Landmark: Chirar More',
+    href: 'https://maps.app.goo.gl/khGP5h69njtjg5aB8',
+    external: true,
+    bg: 'bg-mint',
+    icon: '<path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>',
+  },
+  {
+    label: 'Timings',
+    value: '11:00 AM – 9:00 PM',
+    href: '',
+    external: false,
+    bg: 'bg-sky',
+    icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  },
 ]
 
 const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py-3.5 text-[0.95rem] text-navy placeholder:text-navy/35 transition-all duration-300 focus:border-violet focus:bg-white focus:outline-none focus:ring-4 focus:ring-violet/15'
@@ -42,14 +69,21 @@ const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py
             v-for="c in info"
             :key="c.label"
             :href="c.href || undefined"
-            class="group flex items-center gap-5 rounded-[1.75rem] bg-white p-5 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_60px_rgba(124,92,196,0.18)]"
+            :target="c.external ? '_blank' : undefined"
+            :rel="c.external ? 'noopener' : undefined"
+            class="group flex items-center gap-5 rounded-[1.75rem] bg-white p-5 shadow-[0_10px_40px_rgba(30,77,70,0.07)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_60px_rgba(125,168,142,0.28)]"
           >
             <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-[45%_55%_50%_50%] text-plum transition-transform duration-500 group-hover:-translate-y-1" :class="c.bg">
               <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="c.icon" />
             </span>
-            <span>
+            <span class="min-w-0">
               <span class="block text-xs uppercase tracking-[0.2em] text-plum/60">{{ c.label }}</span>
-              <span class="mt-0.5 block font-medium text-navy">{{ c.value }}</span>
+              <span class="mt-0.5 block break-words font-medium leading-snug text-navy">{{ c.value }}</span>
+              <span v-if="c.note" class="mt-1 block text-sm text-navy/60">{{ c.note }}</span>
+              <span v-if="c.external" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-plum">
+                Get directions
+                <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </span>
             </span>
           </component>
 
@@ -63,7 +97,7 @@ const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py
         </div>
 
         <!-- Form -->
-        <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender-soft via-white to-peach/40 p-7 shadow-[0_20px_70px_rgba(63,46,128,0.12)] sm:p-10">
+        <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender-soft via-white to-peach/40 p-7 shadow-[0_20px_70px_rgba(30,77,70,0.12)] sm:p-10">
           <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-blob-a rounded-full bg-violet/15 blur-3xl max-md:animate-none" aria-hidden="true" />
 
           <Transition
@@ -119,7 +153,7 @@ const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py
               <button
                 type="submit"
                 :disabled="sending"
-                class="group inline-flex items-center gap-2 rounded-full bg-plum px-8 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(124,92,196,0.5)] disabled:opacity-60"
+                class="group inline-flex items-center gap-2 rounded-full bg-plum px-8 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(30,77,70,0.4)] disabled:opacity-60"
               >
                 {{ sending ? 'Sending…' : 'Send message' }}
                 <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
