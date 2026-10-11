@@ -6,7 +6,7 @@ interface Service {
   slug: string
   name: string
   shortDescription: string
-  consultants: string[] // lowercased names from the Services "Consultants" column
+  consultants: string[]
 }
 
 interface Doctor {
@@ -49,11 +49,10 @@ const form = reactive({
   email: '',
   phone: '',
   message: '',
+  website: '', // honeypot
 })
 
-/* ---------- Service decides which experts are shown ----------
-   Uses the same "Consultants" column the service page already uses.
-   No service chosen, or an empty Consultants column -> everyone is shown. */
+/* ---------- Service decides which experts are shown ---------- */
 const selectedService = computed(() => services.value.find((s) => s.id === form.serviceId) ?? null)
 
 const doctorMatchesService = (d: Doctor, s: Service | null) => {
@@ -78,12 +77,10 @@ if (typeof route.query.service === 'string') form.serviceId = route.query.servic
 if (typeof route.query.doctor === 'string' && doctors.value.some((d) => d.id === route.query.doctor)) {
   form.doctorId = route.query.doctor
 }
-// Drop a preselected doctor who isn't listed for the preselected service.
 if (form.doctorId && !filteredDoctors.value.some((d) => d.id === form.doctorId)) {
   form.doctorId = ''
 }
 
-// Changing the service can hide the doctor already chosen, so clear it then.
 watch(
   () => form.serviceId,
   () => {
@@ -172,16 +169,37 @@ const canSubmit = computed(
   () => !!form.doctorId && !!form.date && !!form.time && !!form.name && !!form.email,
 )
 
+/* ---------- Submit: saves the booking to Notion ---------- */
 const sending = ref(false)
 const sent = ref(false)
+const submitError = ref('')
 
-// NOTE: this only shows a success screen for now. Wire it to a real
-// email/calendar backend so bookings are actually received.
 const submit = async () => {
+  submitError.value = ''
   sending.value = true
-  await new Promise((r) => setTimeout(r, 900))
-  sending.value = false
-  sent.value = true
+  try {
+    await $fetch('/api/bookings', {
+      method: 'POST',
+      body: {
+        serviceId: form.serviceId,
+        doctorId: form.doctorId,
+        date: form.date,
+        time: form.time,
+        mode: form.mode,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        website: form.website,
+      },
+    })
+    sent.value = true
+  } catch (err: any) {
+    submitError.value =
+      err?.data?.statusMessage || 'Something went wrong. Please try again, or call us to book.'
+  } finally {
+    sending.value = false
+  }
 }
 
 const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py-3.5 text-[0.95rem] text-navy placeholder:text-navy/35 transition-all duration-300 focus:border-violet focus:bg-white focus:outline-none focus:ring-4 focus:ring-violet/15'
@@ -198,10 +216,10 @@ const initials = (name: string) =>
         <svg viewBox="0 0 24 24" class="h-9 w-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
       </div>
       <h2 class="mt-6 font-serif text-3xl font-semibold text-navy">Thank you, {{ form.name || 'friend' }}.</h2>
-      <p class="mx-auto mt-3 max-w-[440px] text-navy/70">
-        Your request to see <strong class="text-plum">{{ selectedDoctor?.name }}</strong> on
+      <p class="mx-auto mt-3 max-w-[460px] text-navy/70">
+        We have received your request to see <strong class="text-plum">{{ selectedDoctor?.name }}</strong> on
         <strong class="text-plum">{{ formatDateLabel(form.date) }} at {{ form.time }}</strong>
-        has been received. We'll confirm your exact slot shortly.
+        ({{ form.mode }}). Our team will confirm your slot shortly.
       </p>
       <NuxtLink
         to="/"
@@ -333,7 +351,7 @@ const initials = (name: string) =>
             </label>
           </div>
           <p v-if="selectedFee != null" class="mt-3 text-xs text-navy/55">
-            Consultation fee: <strong class="text-plum">{{ rupee(selectedFee) }}</strong>. Advance payment is required to confirm your slot.
+            Consultation fee: <strong class="text-plum">{{ rupee(selectedFee) }}</strong>.
           </p>
         </fieldset>
       </div>
@@ -358,19 +376,28 @@ const initials = (name: string) =>
         <label class="mt-5 block text-sm font-medium text-navy/80">Anything you'd like us to know? (optional)
           <textarea v-model="form.message" rows="3" placeholder="Share only what you're comfortable with." :class="field" />
         </label>
+
+        <!-- Honeypot: hidden from people, bots fill it -->
+        <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+          <label>Website <input v-model="form.website" type="text" tabindex="-1" autocomplete="off" /></label>
+        </div>
       </div>
 
       <!-- Submit -->
-      <div v-if="form.time" class="flex flex-col items-end gap-3">
-        <button
-          type="submit"
-          :disabled="!canSubmit || sending"
-          class="inline-flex items-center gap-2 rounded-full bg-plum px-8 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
-        >
-          {{ sending ? 'Sending…' : 'Confirm booking' }}
-          <svg v-if="!sending" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-        </button>
-        <p class="text-xs text-navy/45">Your details are kept private and never shared.</p>
+      <div v-if="form.time" class="space-y-4">
+        <p v-if="submitError" class="rounded-xl bg-blush/40 px-4 py-3 text-sm text-navy" role="alert">{{ submitError }}</p>
+
+        <div class="flex flex-col items-end gap-3">
+          <button
+            type="submit"
+            :disabled="!canSubmit || sending"
+            class="inline-flex items-center gap-2 rounded-full bg-plum px-8 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+          >
+            {{ sending ? 'Booking…' : 'Confirm booking' }}
+            <svg v-if="!sending" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+          <p class="text-xs text-navy/45">Your details are kept private and never shared.</p>
+        </div>
       </div>
     </form>
   </div>

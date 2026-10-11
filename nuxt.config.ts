@@ -41,5 +41,6 @@ export default defineNuxtConfig({
   notionAboutDbId: '',
   notionActivityDatabaseId: '',
   notionTestimonialsDatabaseId: '',
+  notionBookingsDatabaseId: '',
 },
 })
