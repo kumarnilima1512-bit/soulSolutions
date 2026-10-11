@@ -11,6 +11,7 @@ interface NotionPage {
     Slug?: { rich_text: RichText[] }
     ShortDescription?: { rich_text: RichText[] }
     Image?: { files: NotionFile[] }
+    Consultants?: { rich_text: RichText[] }
     Order?: { number: number | null }
     Active?: { checkbox: boolean }
   }
@@ -46,6 +47,11 @@ export default cachedEventHandler(
           name: text(p.Name?.title),
           shortDescription: text(p.ShortDescription?.rich_text),
           image: fileUrl(p.Image?.files?.[0]),
+          // Names typed in the Consultants column, e.g. ["sanchari roy", "arnab ghosh"]
+          consultants: text(p.Consultants?.rich_text)
+            .split(',')
+            .map((s) => s.trim().toLowerCase())
+            .filter(Boolean),
         }
       })
     } catch (err) {

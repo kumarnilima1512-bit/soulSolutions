@@ -1,17 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({ title: 'Contact | Soul Solutions', description: 'Book a session or send us a message. We are here to listen.' })
 
-const form = reactive({ name: '', email: '', phone: '', mode: 'Online', message: '' })
-const sending = ref(false)
-const sent = ref(false)
-
-const submit = async () => {
-  sending.value = true
-  await new Promise((r) => setTimeout(r, 900))
-  sending.value = false
-  sent.value = true
-}
-
 const info = [
   {
     label: 'Call us',
@@ -47,8 +36,6 @@ const info = [
     icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   },
 ]
-
-const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py-3.5 text-[0.95rem] text-navy placeholder:text-navy/35 transition-all duration-300 focus:border-violet focus:bg-white focus:outline-none focus:ring-4 focus:ring-violet/15'
 </script>
 
 <template>
@@ -96,71 +83,10 @@ const field = 'mt-2 w-full rounded-2xl border border-plum/15 bg-white/80 px-5 py
           </div>
         </div>
 
-        <!-- Form -->
-        <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lavender-soft via-white to-peach/40 p-7 shadow-[0_20px_70px_rgba(30,77,70,0.12)] sm:p-10">
-          <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-blob-a rounded-full bg-violet/15 blur-3xl max-md:animate-none" aria-hidden="true" />
-
-          <Transition
-            mode="out-in"
-            enter-active-class="transition duration-700"
-            enter-from-class="opacity-0 translate-y-4"
-            leave-active-class="transition duration-300"
-            leave-to-class="opacity-0"
-          >
-            <div v-if="sent" class="relative py-16 text-center">
-              <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-mint text-plum">
-                <svg viewBox="0 0 24 24" class="h-9 w-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
-              </div>
-              <h2 class="mt-6 font-serif text-3xl font-semibold text-navy">Thank you, {{ form.name || 'friend' }}.</h2>
-              <p class="mx-auto mt-3 max-w-[380px] text-navy/70">We have received your message and will reach out soon. Reaching out was a brave first step.</p>
-            </div>
-
-            <form v-else class="relative space-y-5" @submit.prevent="submit">
-              <h2 class="font-serif text-3xl font-semibold text-navy">Book a session</h2>
-
-              <div class="grid gap-5 sm:grid-cols-2">
-                <label class="block text-sm font-medium text-navy/80">Your name
-                  <input v-model="form.name" type="text" required autocomplete="name" placeholder="Your name" :class="field" />
-                </label>
-                <label class="block text-sm font-medium text-navy/80">Phone (optional)
-                  <input v-model="form.phone" type="tel" autocomplete="tel" placeholder="+91" :class="field" />
-                </label>
-              </div>
-
-              <label class="block text-sm font-medium text-navy/80">Email
-                <input v-model="form.email" type="email" required autocomplete="email" placeholder="you@example.com" :class="field" />
-              </label>
-
-              <fieldset>
-                <legend class="text-sm font-medium text-navy/80">Preferred session</legend>
-                <div class="mt-2 flex gap-3">
-                  <label
-                    v-for="m in ['Online', 'In-person']"
-                    :key="m"
-                    class="cursor-pointer rounded-full border px-5 py-2 text-sm transition-all duration-300 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-violet"
-                    :class="form.mode === m ? 'border-plum bg-plum text-white' : 'border-plum/20 bg-white text-navy/75 hover:border-violet'"
-                  >
-                    <input v-model="form.mode" type="radio" name="mode" :value="m" class="sr-only" />
-                    {{ m }}
-                  </label>
-                </div>
-              </fieldset>
-
-              <label class="block text-sm font-medium text-navy/80">How can we help?
-                <textarea v-model="form.message" rows="4" required placeholder="Share only what you're comfortable with." :class="field" />
-              </label>
-
-              <button
-                type="submit"
-                :disabled="sending"
-                class="group inline-flex items-center gap-2 rounded-full bg-plum px-8 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(30,77,70,0.4)] disabled:opacity-60"
-              >
-                {{ sending ? 'Sending…' : 'Send message' }}
-                <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-              </button>
-              <p class="text-xs text-navy/50">Your details are kept private and never shared.</p>
-            </form>
-          </Transition>
+        <!-- Booking form (same form as the /book page) -->
+        <div class="relative overflow-hidden rounded-[2rem] bg-white p-7 shadow-[0_20px_70px_rgba(30,77,70,0.12)] sm:p-10">
+          <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-blob-a rounded-full bg-violet/10 blur-3xl max-md:animate-none" aria-hidden="true" />
+          <BookingForm heading="Book a session" />
         </div>
       </div>
     </section>
