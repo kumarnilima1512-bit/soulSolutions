@@ -47,7 +47,7 @@ onMounted(() => setTimeout(() => (heroShown.value = true), 80))
         class="mx-auto max-w-[760px] text-center transition-all duration-[900ms] ease-out"
         :class="heroShown ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'"
       >
-        <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">The Soul Solutions Blog</p>
+        <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">The Soul Solutions Article on Mental Health</p>
         <h1 class="mt-5 font-serif text-[clamp(2.4rem,5.4vw,4.2rem)] font-semibold leading-[1.08] text-navy">
           Thoughtful reads for a
           <em class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text font-medium italic text-transparent">
@@ -62,7 +62,7 @@ onMounted(() => setTimeout(() => (heroShown.value = true), 80))
     </section>
 
     <p v-if="error" class="px-6 py-24 text-center text-navy/60">
-      Our blog posts will be available here shortly.
+      Our  posts will be available here shortly.
     </p>
 
     <template v-else>
