@@ -121,20 +121,11 @@ onBeforeUnmount(() => {
           :class="[base, heroShown ? on : off]"
           style="transition-delay: 1550ms"
         >
-          <NuxtLink
-            to="/book"
-            class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(124,92,196,0.5)]"
-          >
-            Book a Joint Consultation
-            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </NuxtLink>
           <a
             href="#founders"
             class="rounded-full border-[1.5px] border-plum/70 px-7 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:scale-[1.03] hover:border-violet hover:bg-white/60"
           >
-            Meet the Founders
+            Meet The Whole Team
           </a>
         </div>
       </div>
@@ -241,7 +232,10 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- ============ 3. OUR STORY ============ -->
+    <!-- ============ 3. MENTORS ============ -->
+    <AboutMemberSection v-if="mentors.length" title="Our mentors" :members="mentors" tone="white" @select="selected = $event" />
+
+    <!-- ============ 4. OUR STORY ============ -->
     <section ref="storyEl" class="relative overflow-hidden bg-cream px-6 py-20 lg:px-10 lg:py-28">
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute -left-24 top-10 h-64 w-64 animate-blob-a rounded-full bg-lavender/60 blur-3xl max-md:animate-none" />
@@ -305,11 +299,8 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- ============ 4. MENTORS ============ -->
-    <AboutMemberSection v-if="mentors.length" title="Our mentors" :members="mentors" tone="white" @select="selected = $event" />
-
     <!-- ============ 5. TEAM (founders, mentors and professionals together) ============ -->
-    <AboutMemberSection v-if="everyone.length" title="Our team" :members="everyone" tone="lavender" @select="selected = $event" />
+    <AboutMemberSection v-if="everyone.length" title="The people who care for you" :members="everyone" tone="lavender" @select="selected = $event" />
 
     <!-- ============ 6. CTA ============ -->
     <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
