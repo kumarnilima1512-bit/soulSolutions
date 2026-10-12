@@ -23,7 +23,6 @@ const { el: storyEl, shown: storyShown } = useReveal()
 const { el: statsEl, shown: statsShown } = useReveal(0.3)
 const { el: valuesEl, shown: valuesShown } = useReveal(0.1)
 const { el: stepsEl, shown: stepsShown } = useReveal()
-const { el: teamEl, shown: teamShown } = useReveal(0.08)
 const { el: ctaEl, shown: ctaShown } = useReveal(0.3)
 
 const base = 'transition-all duration-[900ms] ease-out'
@@ -93,32 +92,6 @@ const steps = [
   { n: '03', title: 'Coordinated care', text: 'Psychiatric consultations and psychotherapy continue side by side, in coordination.' },
   { n: '04', title: 'Joint reviews', text: 'After every four to five sessions, we review progress together and refine the approach.' },
 ]
-
-/* ---------- Team (Notion ) ---------- */
-interface TeamMember {
-  id: string
-  department: 'psychiatry' | 'psychology'
-  name: string
-  role: string
-  bio: string | null
-  photo_url: string | null
-}
-
-const { data: team, error: teamError } = await useFetch<TeamMember[]>('/api/team', {
-  default: () => [],
-})
-
-const groupedTeam = computed(() => team.value ?? [])
-
-const initials = (name: string) =>
-  name
-    .replace(/^(Dr|Ms|Mr|Mrs)\.?\s+/i, '')
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
 </script>
 
 <template>
@@ -167,31 +140,9 @@ const initials = (name: string) =>
           :class="[base, heroShown ? on : off]"
           style="transition-delay: 1500ms"
         >
-            Every journey begins with a joint consultation, where a psychiatrist and a clinical
-  psychologist understand you early, plan together and review your progress along the way.
+          Every journey begins with a joint consultation, where a psychiatrist and a clinical
+          psychologist understand you early, plan together and review your progress along the way.
         </p>
-
-        <div
-          class="mt-9 flex flex-wrap items-center justify-center gap-4"
-          :class="[base, heroShown ? on : off]"
-          style="transition-delay: 1750ms"
-        >
-          <NuxtLink
-            to="/book"
-            class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(124,92,196,0.5)]"
-          >
-            Book a Joint Consultation
-            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </NuxtLink>
-          <a
-            href="#story"
-            class="rounded-full border-[1.5px] border-plum/70 px-7 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:scale-[1.03] hover:border-violet hover:bg-white/60"
-          >
-            Our Story
-          </a>
-        </div>
       </div>
 
       <svg class="absolute -bottom-px left-0 z-10 h-12 w-full sm:h-16 lg:h-20" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
@@ -347,69 +298,7 @@ const initials = (name: string) =>
       </div>
     </section>
 
-    <!-- ============ 6. TEAM (Notion ) ============ -->
-    <section ref="teamEl" class="bg-lavender-soft px-6 py-16 lg:px-10 lg:py-24">
-      <div class="mx-auto max-w-[1240px]">
-        <div class="mx-auto max-w-[640px] text-center" :class="[base, teamShown ? on : off]">
-          <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">Our team</p>
-          <h2 class="mt-4 font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
-            The people who <em class="font-medium italic">care for you</em>
-          </h2>
-        </div>
-
-        <p v-if="teamError" class="mt-12 text-center text-navy/60">
-          Our team details will be available here shortly.
-        </p>
-
-        <!-- Mobile: horizontal swipe slider | sm+: grid -->
-        <div
-          class="-mx-6 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-6 pb-8 pt-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 sm:pt-0 lg:grid-cols-3"
-        >
-          <div
-            v-for="(m, i) in groupedTeam"
-            :key="m.id"
-            class="w-[78%] shrink-0 snap-center sm:w-auto sm:shrink"
-            :class="[base, teamShown ? on : off]"
-            :style="{ transitionDelay: `${150 + i * 140}ms` }"
-          >
-            <article class="group h-full rounded-[1.75rem] bg-white p-7 text-center shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)]">
-              <div class="mx-auto h-24 w-24 overflow-hidden rounded-full ring-4 ring-white">
-                <img
-                  v-if="m.photo_url"
-                  :src="m.photo_url"
-                  :alt="`Portrait of ${m.name}`"
-                  loading="lazy"
-                  class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                />
-                <div
-                  v-else
-                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-violet/40 font-serif text-2xl font-semibold text-plum transition-transform duration-500 group-hover:-translate-y-1.5 group-hover:scale-105"
-                  aria-hidden="true"
-                >
-                  {{ initials(m.name) }}
-                </div>
-              </div>
-              <p class="mt-4 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
-                {{ m.department === 'psychiatry' ? 'Psychiatry' : 'Psychology' }}
-              </p>
-              <h3 class="mt-1 font-serif text-xl font-semibold text-navy">{{ m.name }}</h3>
-              <p class="mt-1 text-sm text-navy/60">{{ m.role }}</p>
-              <p v-if="m.bio" class="mt-3 text-[0.88rem] leading-relaxed text-navy/70">{{ m.bio }}</p>
-            </article>
-          </div>
-        </div>
-
-        <!-- Swipe hint (mobile only) -->
-        <p v-if="groupedTeam.length > 1" class="mt-1 flex items-center justify-center gap-1.5 text-xs text-plum/60 sm:hidden">
-          Swipe to meet the team
-          <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
-        </p>
-      </div>
-    </section>
-
-    <!-- ============ 7. CTA ============ -->
+    <!-- ============ 6. CTA ============ -->
     <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
       <div
         class="relative mx-auto max-w-[1100px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#2d2660] via-plum to-[#6b4fb0] px-8 py-16 text-center shadow-[0_30px_80px_rgba(63,46,128,0.35)] sm:px-16 sm:py-20"
