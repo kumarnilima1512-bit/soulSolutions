@@ -22,7 +22,6 @@ function useReveal(threshold = 0.15) {
 const { el: storyEl, shown: storyShown } = useReveal()
 const { el: statsEl, shown: statsShown } = useReveal(0.3)
 const { el: valuesEl, shown: valuesShown } = useReveal(0.1)
-const { el: stepsEl, shown: stepsShown } = useReveal()
 const { el: ctaEl, shown: ctaShown } = useReveal(0.3)
 
 const base = 'transition-all duration-[900ms] ease-out'
@@ -85,7 +84,7 @@ const onMove = (e: MouseEvent) => {
   el.style.setProperty('--my', `${e.clientY - r.top}px`)
 }
 
-/* ---------- How we work → Care journey ---------- */
+/* ---------- Care journey (now inside the hero) ---------- */
 const steps = [
   { n: '01', title: 'Joint consultation', text: 'A psychiatrist and a clinical psychologist meet you together, to understand what you are experiencing, why, and what may help.' },
   { n: '02', title: 'Individualized care plan', text: 'You receive a clear plan shaped around you and your story, not a one-size-fits-all template.' },
@@ -96,8 +95,8 @@ const steps = [
 
 <template>
   <div>
-    <!-- ============ 1. PAGE HEADER ============ -->
-    <section class="relative isolate overflow-hidden bg-gradient-to-br from-[#fff6ee] via-cream to-[#f4effb] px-6 pb-28 pt-36 sm:pt-44 lg:px-10 lg:pb-36">
+    <!-- ============ 1. PAGE HEADER (with care journey) ============ -->
+    <section class="relative isolate overflow-hidden bg-gradient-to-br from-[#fff6ee] via-cream to-[#f4effb] px-4 pb-24 pt-36 sm:px-6 sm:pt-44 lg:px-10 lg:pb-32">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div class="absolute -left-24 top-16 h-72 w-72 animate-blob-a rounded-full bg-lavender/80 blur-3xl max-md:animate-none" />
         <div class="absolute -right-20 top-1/3 h-80 w-80 animate-blob-b rounded-full bg-peach/70 blur-3xl max-md:animate-none" />
@@ -145,12 +144,44 @@ const steps = [
         </p>
       </div>
 
+      <!-- Care journey: compact, right under the paragraph -->
+      <div class="mx-auto mt-10 max-w-[920px] sm:mt-12" :class="[base, heroShown ? on : off]" style="transition-delay: 1800ms">
+        <p class="text-center text-[0.68rem] font-medium uppercase tracking-[0.3em] text-plum/70">Your care journey</p>
+        <h2 class="mt-2 text-center font-serif text-lg font-semibold leading-tight text-navy sm:text-2xl">
+          Planned together, <em class="font-medium italic">reviewed together</em>
+        </h2>
+
+        <div class="relative mt-6 grid grid-cols-4 gap-2 sm:mt-8 sm:gap-5">
+          <!-- Dashed line (draws left to right) -->
+          <div
+            class="absolute left-[12.5%] right-[12.5%] top-[18px] origin-left border-t-2 border-dashed border-violet/30 transition-transform duration-[1800ms] ease-out sm:top-[22px]"
+            :class="heroShown ? 'scale-x-100' : 'scale-x-0'"
+            style="transition-delay: 2200ms"
+            aria-hidden="true"
+          />
+
+          <div
+            v-for="(s, i) in steps"
+            :key="s.n"
+            class="relative text-center"
+            :class="[base, heroShown ? on : off]"
+            :style="{ transitionDelay: `${2000 + i * 200}ms` }"
+          >
+            <div class="relative mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-lavender to-white font-serif text-xs font-semibold text-plum shadow-[0_8px_22px_rgba(124,92,196,0.2)] ring-4 ring-cream sm:h-11 sm:w-11 sm:text-sm">
+              {{ s.n }}
+            </div>
+            <h3 class="mt-2 font-serif text-[0.7rem] font-semibold leading-tight text-navy sm:mt-3 sm:text-base">{{ s.title }}</h3>
+            <p class="mx-auto mt-1 max-w-[210px] text-[0.58rem] leading-snug text-navy/70 sm:text-[0.8rem] sm:leading-relaxed">{{ s.text }}</p>
+          </div>
+        </div>
+      </div>
+
       <svg class="absolute -bottom-px left-0 z-10 h-12 w-full sm:h-16 lg:h-20" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
         <path class="fill-white" d="M0 72C220 18 470 14 720 52s520 70 720 4v64H0Z" />
       </svg>
     </section>
 
-    <!-- ============ 2. OUR STORY  ============ -->
+    <!-- ============ 2. OUR STORY ============ -->
     <section id="story" ref="storyEl" class="scroll-mt-24 bg-white px-6 py-16 lg:px-10 lg:py-24">
       <div class="mx-auto grid max-w-[1240px] items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <!-- Image -->
@@ -216,7 +247,7 @@ const steps = [
       </dl>
     </section>
 
-    <!-- ============ 4. OUR APPROACH ( "Values" layout) ============ -->
+    <!-- ============ 4. OUR APPROACH ============ -->
     <section ref="valuesEl" class="bg-cream px-4 py-16 sm:px-6 lg:px-10 lg:py-24">
       <div class="mx-auto max-w-[1240px]">
         <div class="mx-auto max-w-[640px] text-center" :class="[base, valuesShown ? on : off]">
@@ -261,44 +292,7 @@ const steps = [
       </div>
     </section>
 
-    <!-- ============ 5. CARE JOURNEY ( "How we work" layout) ============ -->
-    <section ref="stepsEl" class="bg-white px-4 py-16 sm:px-6 lg:px-10 lg:py-24">
-      <div class="mx-auto max-w-[1200px]">
-        <div class="mx-auto max-w-[640px] text-center" :class="[base, stepsShown ? on : off]">
-          <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">Your care journey</p>
-          <h2 class="mt-4 font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
-            Planned together, <em class="font-medium italic">reviewed together</em>
-          </h2>
-        </div>
-
-        <!-- 4 columns in one row on every screen size (compact on mobile) -->
-        <div class="relative mt-10 grid grid-cols-4 gap-2 sm:mt-14 sm:gap-6 lg:mt-16 lg:gap-8">
-          <!-- Horizontal dashed line (draws left to right) -->
-          <div
-            class="absolute left-[12.5%] right-[12.5%] top-5 origin-left border-t-2 border-dashed border-violet/30 transition-transform duration-[1800ms] ease-out sm:top-6 lg:left-[10%] lg:right-[10%] lg:top-8"
-            :class="stepsShown ? 'scale-x-100' : 'scale-x-0'"
-            style="transition-delay: 400ms"
-            aria-hidden="true"
-          />
-
-          <div
-            v-for="(s, i) in steps"
-            :key="s.n"
-            class="relative text-center"
-            :class="[base, stepsShown ? on : off]"
-            :style="{ transitionDelay: `${300 + i * 220}ms` }"
-          >
-            <div class="relative mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-lavender to-white font-serif text-sm font-semibold text-plum shadow-[0_10px_30px_rgba(124,92,196,0.2)] ring-4 ring-white sm:h-12 sm:w-12 sm:text-base lg:h-16 lg:w-16 lg:text-xl">
-              {{ s.n }}
-            </div>
-            <h3 class="mt-3 font-serif text-[0.78rem] font-semibold leading-tight text-navy sm:mt-4 sm:text-lg lg:mt-6 lg:text-2xl">{{ s.title }}</h3>
-            <p class="mx-auto mt-1.5 max-w-[260px] text-[0.62rem] leading-snug text-navy/70 sm:mt-2 sm:text-sm sm:leading-relaxed lg:text-[0.95rem]">{{ s.text }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ 6. CTA ============ -->
+    <!-- ============ 5. CTA ============ -->
     <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
       <div
         class="relative mx-auto max-w-[1100px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#2d2660] via-plum to-[#6b4fb0] px-8 py-16 text-center shadow-[0_30px_80px_rgba(63,46,128,0.35)] sm:px-16 sm:py-20"
