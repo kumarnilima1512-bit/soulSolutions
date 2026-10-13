@@ -75,8 +75,8 @@ watch(() => route.path, scrollActiveIntoView)
           class="h-14 w-auto sm:h-16 xl:h-20"
         />
         <span class="flex flex-col leading-none">
-          <span class="font-serif text-[1.35rem] font-semibold text-navy sm:text-[1.6rem] xl:text-[1.8rem]">
-            Soul Solutions
+          <span class="font-serif text-[1.35rem] text-navy sm:text-[1.6rem] xl:text-[1.8rem]">
+            SOUL SOLUTIONS
           </span>
           <span class="mt-1 hidden text-[0.55rem] tracking-[0.26em] text-navy/60 2xl:block">
             Heal &nbsp;·&nbsp; Understand &nbsp;·&nbsp; Grow

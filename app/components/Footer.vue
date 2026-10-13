@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Replace these two links with your real Instagram and Facebook pages.
 const socials = [
   {
     label: 'Instagram',
