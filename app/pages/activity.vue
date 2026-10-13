@@ -254,7 +254,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============ 3. CTA ============ -->
-    <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
+    <!-- <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
       <div
         class="relative mx-auto max-w-[1100px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#2d2660] via-plum to-[#6b4fb0] px-8 py-16 text-center shadow-[0_30px_80px_rgba(63,46,128,0.35)] sm:px-16 sm:py-20"
         :class="[base, ctaShown ? on : off]"
@@ -284,7 +284,7 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- ============ LIGHTBOX ============ -->
     <Transition

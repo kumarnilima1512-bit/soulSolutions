@@ -110,26 +110,10 @@ const { el: gridEl, shown: gridShown } = useReveal()
     </section>
 
     <!-- ============ CTA ============ -->
-    <section class="bg-white px-6 pb-24 lg:px-10">
-      <div class="relative mx-auto max-w-[1000px] overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#2d2660] via-plum to-[#6b4fb0] px-8 py-14 text-center shadow-[0_30px_80px_rgba(63,46,128,0.3)] sm:px-16">
-        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-          <span class="absolute left-[10%] top-[20%] h-1.5 w-1.5 animate-twinkle rounded-full bg-white" />
-          <span class="absolute right-[14%] top-[26%] h-1 w-1 animate-twinkle rounded-full bg-white [animation-delay:2s]" />
-        </div>
-        <h2 class="relative font-serif text-2xl font-semibold text-white sm:text-3xl">
-          Not sure which service is right for you?
-        </h2>
-        <p class="relative mx-auto mt-3 max-w-[440px] text-white/80">
-          Book a joint consultation and we'll help you find the right kind of support together.
-        </p>
-        <NuxtLink
-          to="/book"
-          class="group relative mt-7 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-plum transition-all duration-300 hover:-translate-y-0.5"
-        >
-          Book a Joint Consultation
-          <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-        </NuxtLink>
-      </div>
-    </section>
+    <CtaBanner
+  title="Not sure which service is right for you?"
+  text="Book a joint consultation and we'll help you find the right support together."
+  button="Book a Consultation"
+/>
   </main>
 </template>

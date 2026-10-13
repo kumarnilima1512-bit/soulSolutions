@@ -303,37 +303,12 @@ onBeforeUnmount(() => {
     <AboutMemberSection v-if="everyone.length" title="The people who care for you" :members="everyone" tone="lavender" @select="selected = $event" />
 
     <!-- ============ 6. CTA ============ -->
-    <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
-      <div
-        class="relative mx-auto max-w-[1100px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#2d2660] via-plum to-[#6b4fb0] px-8 py-16 text-center shadow-[0_30px_80px_rgba(63,46,128,0.35)] sm:px-16 sm:py-20"
-        :class="[base, ctaShown ? on : off]"
-      >
-        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-          <span class="absolute left-[10%] top-[18%] h-1.5 w-1.5 animate-twinkle rounded-full bg-white" />
-          <span class="absolute left-[28%] top-[70%] h-1 w-1 animate-twinkle rounded-full bg-white [animation-delay:1.5s]" />
-          <span class="absolute right-[12%] top-[24%] h-2 w-2 animate-twinkle rounded-full bg-white [animation-delay:3s]" />
-          <span class="absolute right-[30%] top-[78%] h-1.5 w-1.5 animate-twinkle rounded-full bg-white [animation-delay:4.5s]" />
-          <span class="absolute left-[55%] top-[12%] h-1 w-1 animate-twinkle rounded-full bg-white [animation-delay:2.2s]" />
-          <div class="absolute -bottom-24 left-1/2 h-56 w-[70%] -translate-x-1/2 rounded-full bg-[#e89a7a]/25 blur-3xl" />
-        </div>
-
-        <div class="relative">
-          <p class="font-script text-3xl text-white/85 sm:text-4xl">Small steps. Big changes.</p>
-          <h2 class="mx-auto mt-4 max-w-[640px] font-serif text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[1.15] text-white">
-            Let's build a healthier, happier you, together.
-          </h2>
-          <NuxtLink
-            to="/book"
-            class="group mt-9 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(255,255,255,0.35)]"
-          >
-            Book a Joint Consultation
-            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <CtaBanner
+  tone="cream"
+  title="Let's build a healthier, happier you, together."
+  text="Meet our team in person, at your own pace."
+  button="Book a Joint Consultation"
+/>
 
     <!-- ============ PROFILE DIALOG ============ -->
     <Transition

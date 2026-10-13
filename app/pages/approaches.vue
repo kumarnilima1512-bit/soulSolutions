@@ -22,7 +22,6 @@ function useReveal(threshold = 0.15) {
 const { el: storyEl, shown: storyShown } = useReveal()
 const { el: statsEl, shown: statsShown } = useReveal(0.3)
 const { el: valuesEl, shown: valuesShown } = useReveal(0.1)
-const { el: ctaEl, shown: ctaShown } = useReveal(0.3)
 
 const base = 'transition-all duration-[900ms] ease-out'
 const on = 'opacity-100 translate-y-0 blur-0'
@@ -84,7 +83,7 @@ const onMove = (e: MouseEvent) => {
   el.style.setProperty('--my', `${e.clientY - r.top}px`)
 }
 
-/* ---------- Care journey (now inside the hero) ---------- */
+/* ---------- Care journey (inside the hero) ---------- */
 const steps = [
   { n: '01', title: 'Joint consultation', text: 'A psychiatrist and a clinical psychologist meet you together, to understand what you are experiencing, why, and what may help.' },
   { n: '02', title: 'Individualized care plan', text: 'You receive a clear plan shaped around you and your story, not a one-size-fits-all template.' },
@@ -95,7 +94,7 @@ const steps = [
 
 <template>
   <div>
-    <!-- ============ 1. PAGE HEADER (with care journey) ============ -->
+    <!-- ============ 1. PAGE HEADER (with care journey + book button) ============ -->
     <section class="relative isolate overflow-hidden bg-gradient-to-br from-[#fff6ee] via-cream to-[#f4effb] px-4 pb-24 pt-36 sm:px-6 sm:pt-44 lg:px-10 lg:pb-32">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div class="absolute -left-24 top-16 h-72 w-72 animate-blob-a rounded-full bg-lavender/80 blur-3xl max-md:animate-none" />
@@ -173,6 +172,19 @@ const steps = [
             <h3 class="mt-2 font-serif text-[0.7rem] font-semibold leading-tight text-navy sm:mt-3 sm:text-base">{{ s.title }}</h3>
             <p class="mx-auto mt-1 max-w-[210px] text-[0.58rem] leading-snug text-navy/70 sm:text-[0.8rem] sm:leading-relaxed">{{ s.text }}</p>
           </div>
+        </div>
+
+        <!-- Book button, right under the care journey -->
+        <div class="mt-9 text-center sm:mt-10" :class="[base, heroShown ? on : off]" style="transition-delay: 2900ms">
+          <NuxtLink
+            to="/book"
+            class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(30,77,70,0.4)]"
+          >
+            Book a Joint Consultation
+            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </NuxtLink>
         </div>
       </div>
 
@@ -292,38 +304,12 @@ const steps = [
       </div>
     </section>
 
-    <!-- ============ 5. CTA ============ -->
-    <section ref="ctaEl" class="bg-cream px-6 py-16 lg:px-10 lg:py-24">
-      <div
-        class="relative mx-auto max-w-[1100px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#2d2660] via-plum to-[#6b4fb0] px-8 py-16 text-center shadow-[0_30px_80px_rgba(63,46,128,0.35)] sm:px-16 sm:py-20"
-        :class="[base, ctaShown ? on : off]"
-      >
-        <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-          <span class="absolute left-[10%] top-[18%] h-1.5 w-1.5 animate-twinkle rounded-full bg-white" />
-          <span class="absolute left-[28%] top-[70%] h-1 w-1 animate-twinkle rounded-full bg-white [animation-delay:1.5s]" />
-          <span class="absolute right-[12%] top-[24%] h-2 w-2 animate-twinkle rounded-full bg-white [animation-delay:3s]" />
-          <span class="absolute right-[30%] top-[78%] h-1.5 w-1.5 animate-twinkle rounded-full bg-white [animation-delay:4.5s]" />
-          <span class="absolute left-[55%] top-[12%] h-1 w-1 animate-twinkle rounded-full bg-white [animation-delay:2.2s]" />
-          <div class="absolute -bottom-24 left-1/2 h-56 w-[70%] -translate-x-1/2 rounded-full bg-[#e89a7a]/25 blur-3xl" />
-        </div>
-
-        <div class="relative">
-          <p class="font-script text-3xl text-white/85 sm:text-4xl">Small steps. Big changes.</p>
-          <h2 class="mx-auto mt-4 max-w-[640px] font-serif text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-[1.15] text-white">
-            You are not a diagnosis, you are a whole person. Let's build a healthier, happier you,
-            together.
-          </h2>
-          <NuxtLink
-            to="/book"
-            class="group mt-9 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(255,255,255,0.35)]"
-          >
-            Book a Joint Consultation
-            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <!-- ============ 5. CTA (quote only, no button) ============ -->
+    <CtaBanner
+      tone="cream"
+      title="Progress isn't always becoming someone new, sometimes it's understanding who you've always been"
+      text=""
+      button=""
+    />
   </div>
 </template>
