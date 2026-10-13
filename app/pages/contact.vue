@@ -47,10 +47,16 @@ const info = [
       text="Book a session or just say hello. There is no pressure and no judgment, only a real person who will listen."
     />
 
-    <section class="bg-cream px-6 pb-20 lg:px-10 lg:pb-28">
-      <div class="mx-auto grid max-w-[1240px] gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
-        <!-- Info -->
-        <div class="space-y-5">
+    <section class="bg-cream px-4 pb-16 sm:px-6 lg:px-10 lg:pb-28">
+      <div class="mx-auto grid max-w-[1240px] gap-8 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
+        <!-- Booking form: first on mobile/tablet, right column on desktop -->
+        <div class="relative order-1 min-w-0 overflow-hidden rounded-[1.5rem] bg-white p-5 shadow-[0_20px_70px_rgba(30,77,70,0.12)] sm:rounded-[2rem] sm:p-10 lg:order-2">
+          <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-blob-a rounded-full bg-violet/10 blur-3xl max-md:animate-none" aria-hidden="true" />
+          <BookingForm heading="Book a session" />
+        </div>
+
+        <!-- Info: below the form on mobile, left column on desktop -->
+        <div class="order-2 grid min-w-0 gap-3 sm:grid-cols-2 sm:gap-4 lg:order-1 lg:grid-cols-1 lg:content-start lg:gap-5">
           <component
             :is="c.href ? 'a' : 'div'"
             v-for="c in info"
@@ -58,35 +64,29 @@ const info = [
             :href="c.href || undefined"
             :target="c.external ? '_blank' : undefined"
             :rel="c.external ? 'noopener' : undefined"
-            class="group flex items-center gap-5 rounded-[1.75rem] bg-white p-5 shadow-[0_10px_40px_rgba(30,77,70,0.07)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_60px_rgba(125,168,142,0.28)]"
+            class="group flex min-w-0 items-start gap-4 rounded-[1.25rem] bg-white p-4 shadow-[0_10px_40px_rgba(30,77,70,0.07)] transition-all duration-500 active:scale-[0.99] sm:items-center sm:gap-5 sm:rounded-[1.75rem] sm:p-5 lg:hover:-translate-y-1.5 lg:hover:shadow-[0_24px_60px_rgba(125,168,142,0.28)]"
           >
-            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-[45%_55%_50%_50%] text-plum transition-transform duration-500 group-hover:-translate-y-1" :class="c.bg">
-              <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="c.icon" />
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-[45%_55%_50%_50%] text-plum transition-transform duration-500 group-hover:-translate-y-1 sm:h-14 sm:w-14" :class="c.bg">
+              <svg viewBox="0 0 24 24" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="c.icon" />
             </span>
-            <span class="min-w-0">
-              <span class="block text-xs uppercase tracking-[0.2em] text-plum/60">{{ c.label }}</span>
-              <span class="mt-0.5 block break-words font-medium leading-snug text-navy">{{ c.value }}</span>
-              <span v-if="c.note" class="mt-1 block text-sm text-navy/60">{{ c.note }}</span>
-              <span v-if="c.external" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-plum">
+            <span class="min-w-0 flex-1">
+              <span class="block text-[0.65rem] uppercase tracking-[0.2em] text-plum/60 sm:text-xs">{{ c.label }}</span>
+              <span class="mt-0.5 block text-[0.92rem] font-medium leading-snug text-navy [overflow-wrap:anywhere] sm:text-base">{{ c.value }}</span>
+              <span v-if="c.note" class="mt-1 block text-[0.8rem] text-navy/60 sm:text-sm">{{ c.note }}</span>
+              <span v-if="c.external" class="mt-2 inline-flex items-center gap-1 text-[0.85rem] font-medium text-plum sm:text-sm">
                 Get directions
                 <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </span>
             </span>
           </component>
 
-          <div class="rounded-[1.75rem] bg-lavender-soft p-6 text-sm leading-relaxed text-navy/75">
+          <div class="rounded-[1.25rem] bg-lavender-soft p-5 text-[0.82rem] leading-relaxed text-navy/75 sm:col-span-2 sm:rounded-[1.75rem] sm:p-6 sm:text-sm lg:col-span-1">
             <p class="font-medium text-navy">Need urgent help?</p>
             <p class="mt-1">
               If you or someone near you is in immediate danger or crisis, please contact your local
               emergency number or a mental health helpline right away. Our form is not monitored in real time.
             </p>
           </div>
-        </div>
-
-        <!-- Booking form (same form as the /book page) -->
-        <div class="relative overflow-hidden rounded-[2rem] bg-white p-7 shadow-[0_20px_70px_rgba(30,77,70,0.12)] sm:p-10">
-          <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-blob-a rounded-full bg-violet/10 blur-3xl max-md:animate-none" aria-hidden="true" />
-          <BookingForm heading="Book a session" />
         </div>
       </div>
     </section>
