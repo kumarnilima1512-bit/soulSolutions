@@ -35,6 +35,15 @@ const getProp = (props: Record<string, any>, name: string) => {
   return key ? props[key] : undefined
 }
 
+// Tries several possible column names, returns the first one that exists.
+const getFirstProp = (props: Record<string, any>, names: string[]) => {
+  for (const n of names) {
+    const v = getProp(props, n)
+    if (v) return v
+  }
+  return undefined
+}
+
 // The title property is found by type, so it works whatever the column is called.
 const getTitleProp = (props: Record<string, any>) =>
   Object.values(props).find((p: any) => p?.type === 'title')
@@ -62,7 +71,7 @@ const readDepartment = (p: any): TeamMember['department'] => {
   return ''
 }
 
-// One item per line (Shift+Enter inside a Notion text cell). Commas also work.
+// One item per line (Shift+Enter inside a Notion text cell). Semicolons also work.
 const readList = (p: any) => {
   // Works whether the column is a text cell or a multi-select
   if (p?.type === 'multi_select') return readMulti(p)
@@ -70,6 +79,15 @@ const readList = (p: any) => {
     .split(/\n|;/)
     .map((s) => s.trim())
     .filter(Boolean)
+}
+
+// Reads a column whatever its type is (text, select, multi-select), as one line.
+const readFlexible = (p: any): string => {
+  if (!p) return ''
+  if (p.type === 'multi_select') return readMulti(p).join(', ')
+  if (p.type === 'select') return readSelect(p)
+  if (p.type === 'title') return readTitle(p)
+  return readText(p).replace(/\s*\n+\s*/g, ', ')
 }
 
 const readPhoto = (p: any): string | null => {
@@ -136,7 +154,9 @@ export default defineCachedEventHandler(
             role: readText(getProp(p, 'Role')),
             department: readDepartment(getProp(p, 'Department')),
             type: readType(getProp(p, 'Type')),
-            qualifications: readText(getProp(p, 'Qualifications')),
+            qualifications: readFlexible(
+              getFirstProp(p, ['Qualifications', 'Qualification', 'Degrees', 'Degree']),
+            ),
             experience_years: readNumber(getProp(p, 'Experience')),
             institutions: readList(getProp(p, 'Institutions')),
             specializations: readList(getProp(p, 'Specializations')),

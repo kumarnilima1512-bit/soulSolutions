@@ -75,9 +75,11 @@ const cardBg = computed(() =>
             <p v-if="departmentLabel(m.department)" class="mt-4 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
               {{ departmentLabel(m.department) }}
             </p>
-            <h3 class="mt-1 font-serif text-xl font-semibold text-navy">{{ m.name }}</h3>
-            <p v-if="m.role" class="mt-1 text-sm text-navy/60">{{ m.role }}</p>
-            <p v-if="m.qualifications" class="mt-1 text-[0.8rem] font-medium text-plum">{{ m.qualifications }}</p>
+
+            <!-- Name with qualifications in brackets -->
+            <h3 class="mt-1 font-serif text-xl font-semibold leading-snug text-navy">
+              {{ m.name }}<span v-if="m.qualifications" class="ml-1 font-sans text-[0.8rem] font-medium text-plum">({{ m.qualifications }})</span>
+            </h3>
 
             <ul v-if="m.specializations.length" class="mt-4 flex flex-wrap justify-center gap-1.5">
               <li
@@ -93,6 +95,7 @@ const cardBg = computed(() =>
               </li>
             </ul>
 
+            <!-- Role, experience, institutions and bio are inside the full profile -->
             <button
               type="button"
               class="mt-auto pt-5 text-sm font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline"

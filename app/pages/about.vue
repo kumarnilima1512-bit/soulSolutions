@@ -24,7 +24,6 @@ function useReveal(threshold = 0.15) {
 
 const { el: foundersEl, shown: foundersShown } = useReveal(0.1)
 const { el: storyEl, shown: storyShown } = useReveal(0.12)
-const { el: ctaEl, shown: ctaShown } = useReveal(0.3)
 
 const base = 'transition-all duration-[900ms] ease-out'
 const on = 'opacity-100 translate-y-0 blur-0'
@@ -55,7 +54,7 @@ const professionals = computed(() => byType('professional'))
 // The final "Our team" section lists everyone: founders first, then mentors, then professionals
 const everyone = computed(() => [...founders.value, ...mentors.value, ...professionals.value])
 
-/* ---------- Profile dialog (mentors and professionals) ---------- */
+/* ---------- Profile dialog ---------- */
 const selected = ref<Member | null>(null)
 onKeyStroke('Escape', () => (selected.value = null))
 watch(selected, (v) => {
@@ -97,13 +96,13 @@ onBeforeUnmount(() => {
             >{{ w }}</span>
           </span>
           <br />
-          <span aria-hidden="true" class="italic">
+          <span aria-hidden="true">
             <span
               v-for="(w, i) in line2"
               :key="'b' + i"
               :class="[word, heroShown ? on : off]"
               :style="{ transitionDelay: `${700 + i * 130}ms` }"
-            ><span class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text font-medium text-transparent">{{ w }}</span></span>
+            ><span class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text font-semibold text-transparent">{{ w }}</span></span>
           </span>
         </h1>
 
@@ -166,7 +165,8 @@ onBeforeUnmount(() => {
             :class="[base, foundersShown ? on : off]"
             :style="{ transitionDelay: `${200 + i * 180}ms` }"
           >
-            <article class="group relative h-full overflow-hidden flex flex-col rounded-[1.25rem] bg-gradient-to-br from-lavender-soft via-white to-[#fff6ee] p-4 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)] sm:rounded-[2rem] sm:p-8 lg:p-10">
+            <!-- Card: photo, department, name (qualifications), specializations, View full profile -->
+            <article class="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] bg-gradient-to-br from-lavender-soft via-white to-[#fff6ee] p-4 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)] sm:rounded-[2rem] sm:p-8 lg:p-10">
               <div class="text-center">
                 <div class="relative mx-auto h-24 w-24 sm:h-40 sm:w-40 lg:h-44 lg:w-44">
                   <span class="absolute -inset-2 animate-ring rounded-full border border-violet/30 max-md:animate-none" aria-hidden="true" />
@@ -191,40 +191,35 @@ onBeforeUnmount(() => {
                 <p v-if="departmentLabel(f.department)" class="mt-4 text-[0.55rem] font-medium uppercase tracking-[0.18em] text-plum/60 sm:mt-6 sm:text-[0.65rem] sm:tracking-[0.2em]">
                   {{ departmentLabel(f.department) }}
                 </p>
-                <h3 class="mt-1 font-serif text-base font-semibold leading-snug text-navy sm:text-2xl lg:text-[1.7rem]">{{ f.name }}</h3>
-                <p v-if="f.role" class="mt-1 text-[0.7rem] leading-snug text-navy/60 sm:text-sm">{{ f.role }}</p>
-                <p v-if="f.qualifications" class="mt-1.5 text-[0.65rem] font-medium leading-snug text-plum sm:mt-2 sm:text-[0.85rem]">{{ f.qualifications }}</p>
-                <p v-if="f.experience_years" class="mt-1 text-[0.62rem] text-navy/60 sm:text-[0.8rem]">{{ f.experience_years }}+ years of experience</p>
+
+                <h3 class="mt-1 font-serif text-base font-semibold leading-snug text-navy sm:text-2xl lg:text-[1.7rem]">
+                  {{ f.name }}<span v-if="f.qualifications" class="ml-1 font-sans text-[0.7rem] font-medium text-plum sm:text-[0.9rem]">({{ f.qualifications }})</span>
+                </h3>
               </div>
 
-              <div v-if="f.institutions.length" class="mt-6 hidden sm:block">
-                <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Institutions</p>
-                <ul class="mt-2 space-y-1 text-[0.9rem] text-navy/75">
-                  <li v-for="inst in f.institutions" :key="inst" class="flex gap-2">
-                    <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-violet" aria-hidden="true" />
-                    {{ inst }}
-                  </li>
-                </ul>
-              </div>
+              <ul v-if="f.specializations.length" class="mt-3 flex flex-wrap justify-center gap-1.5 sm:mt-5 sm:gap-2">
+                <li
+                  v-for="s in f.specializations.slice(0, 3)"
+                  :key="s"
+                  class="rounded-full bg-white px-2 py-0.5 text-[0.6rem] text-plum shadow-[0_2px_10px_rgba(63,46,128,0.08)] sm:px-3 sm:py-1 sm:text-[0.78rem]"
+                >
+                  {{ s }}
+                </li>
+                <li v-if="f.specializations.length > 3" class="px-1 py-0.5 text-[0.6rem] text-navy/50 sm:text-[0.78rem]">
+                  +{{ f.specializations.length - 3 }} more
+                </li>
+              </ul>
 
-              <div v-if="f.specializations.length" class="mt-5 hidden sm:block">
-                <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Specializations</p>
-                <ul class="mt-2 flex flex-wrap gap-2">
-                  <li v-for="s in f.specializations" :key="s" class="rounded-full bg-white px-3 py-1 text-[0.78rem] text-plum shadow-[0_2px_10px_rgba(63,46,128,0.08)]">
-                    {{ s }}
-                  </li>
-                </ul>
-              </div>
-
-              <p v-if="f.bio" class="mt-6 hidden text-[0.95rem] leading-relaxed text-navy/70 sm:block">{{ f.bio }}</p>
-
-              <!-- Mobile: compact card, full details open in the profile dialog -->
+              <!-- Role, experience, institutions and bio are inside the full profile -->
               <button
                 type="button"
-                class="mt-auto pt-4 text-center text-[0.75rem] font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline sm:hidden"
+                class="mt-auto inline-flex items-center justify-center gap-1.5 pt-4 text-center text-[0.75rem] font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline sm:pt-7 sm:text-sm"
                 @click="selected = f"
               >
                 View full profile
+                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
               </button>
             </article>
           </div>
@@ -304,13 +299,13 @@ onBeforeUnmount(() => {
 
     <!-- ============ 6. CTA ============ -->
     <CtaBanner
-  tone="cream"
-  title="Let's build a healthier, happier you, together."
-  text="Meet our team in person, at your own pace."
-  button="Book a Joint Consultation"
-/>
+      tone="cream"
+      title="Let's build a healthier, happier you, together."
+      text="Meet our team in person, at your own pace."
+      button="Book a Joint Consultation"
+    />
 
-    <!-- ============ PROFILE DIALOG ============ -->
+    <!-- ============ PROFILE DIALOG (everything is here) ============ -->
     <Transition
       enter-active-class="transition duration-300 ease-out"
       enter-from-class="opacity-0"
@@ -356,27 +351,30 @@ onBeforeUnmount(() => {
             <p v-if="departmentLabel(selected.department)" class="mt-5 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
               {{ departmentLabel(selected.department) }}
             </p>
-            <h3 class="mt-1 font-serif text-2xl font-semibold text-navy">{{ selected.name }}</h3>
+
+            <h3 class="mt-1 font-serif text-2xl font-semibold text-navy">
+              {{ selected.name }}<span v-if="selected.qualifications" class="ml-1 font-sans text-[0.95rem] font-medium text-plum">({{ selected.qualifications }})</span>
+            </h3>
+
             <p v-if="selected.role" class="mt-1 text-sm text-navy/60">{{ selected.role }}</p>
-            <p v-if="selected.qualifications" class="mt-2 text-[0.85rem] font-medium text-plum">{{ selected.qualifications }}</p>
             <p v-if="selected.experience_years" class="mt-1 text-[0.8rem] text-navy/60">{{ selected.experience_years }}+ years of experience</p>
           </div>
 
-          <div v-if="selected.institutions.length" class="mt-7">
+          <div v-if="selected.specializations.length" class="mt-7">
+            <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Specializations</p>
+            <ul class="mt-2 flex flex-wrap gap-2">
+              <li v-for="s in selected.specializations" :key="s" class="rounded-full bg-lavender-soft px-3 py-1 text-[0.8rem] text-plum">
+                {{ s }}
+              </li>
+            </ul>
+          </div>
+
+          <div v-if="selected.institutions.length" class="mt-6">
             <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Institutions</p>
             <ul class="mt-2 space-y-1 text-[0.92rem] text-navy/75">
               <li v-for="inst in selected.institutions" :key="inst" class="flex gap-2">
                 <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-violet" aria-hidden="true" />
                 {{ inst }}
-              </li>
-            </ul>
-          </div>
-
-          <div v-if="selected.specializations.length" class="mt-6">
-            <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Specializations</p>
-            <ul class="mt-2 flex flex-wrap gap-2">
-              <li v-for="s in selected.specializations" :key="s" class="rounded-full bg-lavender-soft px-3 py-1 text-[0.8rem] text-plum">
-                {{ s }}
               </li>
             </ul>
           </div>
