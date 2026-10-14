@@ -106,6 +106,59 @@ watch(
   },
 )
 
+/* ---------- Way 1: pick a preferred date first ---------- */
+const prefDate = ref('')
+const dateInput = ref<HTMLInputElement | null>(null)
+
+const minDate = computed(() => (now.value ? toISODate(now.value) : ''))
+const maxDate = computed(() => {
+  if (!now.value) return ''
+  const d = new Date(now.value)
+  d.setDate(d.getDate() + 29)
+  return toISODate(d)
+})
+
+// Opens the calendar when the panel is clicked (showPicker where supported).
+const openPicker = () => {
+  const el = dateInput.value
+  if (!el) return
+  try {
+    el.showPicker()
+  } catch {
+    el.focus()
+  }
+}
+
+const prefWeekday = computed(() => (prefDate.value ? weekdayOf(prefDate.value) : ''))
+
+// Doctors (for the chosen service) who have a schedule on that weekday.
+const doctorsOnPrefDate = computed(() => {
+  if (!prefDate.value) return []
+  return filteredDoctors.value
+    .map((d) => ({ doctor: d, times: d.availability[prefWeekday.value] ?? [] }))
+    .filter((x) => x.times.length > 0)
+})
+
+const clearPrefDate = () => {
+  prefDate.value = ''
+}
+
+// Choosing a doctor from the date panel sets both the doctor and the date.
+const chooseDoctorForDate = async (d: Doctor) => {
+  form.doctorId = d.id
+  await nextTick() // lets the "doctor changed" reset run first
+  form.date = prefDate.value
+}
+
+// If a doctor is already chosen and is free on the new preferred date, jump to that date.
+watch(prefDate, (v) => {
+  if (!v || !selectedDoctor.value) return
+  if ((selectedDoctor.value.availability[weekdayOf(v)] ?? []).length > 0) {
+    form.date = v
+  }
+})
+
+/* ---------- Way 2: pick a doctor, then one of their dates ---------- */
 const availableDates = computed(() => {
   if (!selectedDoctor.value || !now.value) return []
   const availableDays = Object.keys(selectedDoctor.value.availability)
@@ -233,7 +286,7 @@ const initials = (name: string) =>
     <form v-else class="relative space-y-10" @submit.prevent="submit">
       <h2 v-if="heading" class="font-serif text-3xl font-semibold text-navy">{{ heading }}</h2>
 
-      <!-- Service: decides which experts are shown below -->
+      <!-- Service: decides which experts are shown -->
       <div v-if="services.length > 0">
         <label class="text-sm font-medium text-navy/80">
           What do you need support with? <span class="text-navy/40">(optional)</span>
@@ -244,10 +297,98 @@ const initials = (name: string) =>
         </select>
       </div>
 
-      <!-- Step: Doctor -->
+      <!-- Way 1: preferred date first -->
+      <div>
+        <p class="text-sm font-medium text-navy/80">
+          Your preferred date <span class="text-navy/40">(optional)</span>
+        </p>
+
+        <div class="relative mt-2">
+          <button
+            type="button"
+            class="flex w-full items-center gap-3 rounded-2xl border border-plum/15 bg-white/80 px-5 py-3.5 text-left transition-all duration-300 hover:border-violet/50 hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet/15"
+            :aria-label="prefDate ? `Preferred date: ${formatDateLabel(prefDate)}. Change date` : 'Choose a preferred date'"
+            @click="openPicker"
+          >
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-lavender text-plum">
+              <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="3" />
+                <path d="M3 10h18M8 3v4M16 3v4" />
+              </svg>
+            </span>
+            <span class="min-w-0 flex-1 text-[0.95rem]" :class="prefDate ? 'font-medium text-navy' : 'text-navy/40'">
+              {{ prefDate ? formatDateLabel(prefDate) : 'Select a date from the calendar' }}
+            </span>
+            <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0 text-plum/60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+
+          <!-- Real date input: opens the browser's calendar. Hidden behind the button. -->
+          <input
+            ref="dateInput"
+            v-model="prefDate"
+            type="date"
+            :min="minDate"
+            :max="maxDate"
+            tabindex="-1"
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 h-full w-full opacity-0"
+          />
+        </div>
+
+        <button
+          v-if="prefDate"
+          type="button"
+          class="mt-2 text-xs font-medium text-plum underline-offset-4 hover:underline"
+          @click="clearPrefDate"
+        >
+          Clear date
+        </button>
+
+        <!-- Doctors free on that date -->
+        <div v-if="prefDate" class="mt-4">
+          <p class="text-sm text-navy/70">
+            Available on <strong class="text-navy">{{ formatDateLabel(prefDate) }}</strong>
+            <span v-if="selectedService && selectedService.consultants.length > 0">
+              for {{ selectedService.name }}
+            </span>
+          </p>
+
+          <div v-if="doctorsOnPrefDate.length > 0" class="mt-3 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+            <button
+              v-for="x in doctorsOnPrefDate"
+              :key="x.doctor.id"
+              type="button"
+              class="group flex items-center gap-3 rounded-2xl border p-3 text-left transition-all duration-300 sm:p-4"
+              :class="form.doctorId === x.doctor.id && form.date === prefDate
+                ? 'border-plum bg-lavender-soft shadow-[0_8px_24px_rgba(30,77,70,0.15)]'
+                : 'border-plum/15 hover:border-violet/50 hover:bg-lavender-soft/50'"
+              @click="chooseDoctorForDate(x.doctor)"
+            >
+              <span class="h-11 w-11 shrink-0 overflow-hidden rounded-full bg-lavender-soft">
+                <img v-if="x.doctor.photo_url" :src="x.doctor.photo_url" :alt="x.doctor.name" class="h-full w-full object-cover" />
+                <span v-else class="flex h-full w-full items-center justify-center font-serif text-sm font-semibold text-plum">
+                  {{ initials(x.doctor.name) }}
+                </span>
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-medium leading-snug text-navy sm:text-base">{{ x.doctor.name }}</span>
+                <span class="mt-0.5 block text-[0.7rem] text-navy/60 sm:text-xs">{{ x.doctor.role }}</span>
+                <span class="mt-1 block text-[0.7rem] font-medium leading-snug text-plum sm:text-xs">{{ x.times.join(' · ') }}</span>
+              </span>
+            </button>
+          </div>
+
+          <p v-else class="mt-3 rounded-xl bg-lavender-soft px-4 py-3 text-sm text-navy/70">
+            No expert has a schedule on this day yet. Please try another date, or choose a doctor below to see their available days.
+          </p>
+        </div>
+      </div>
+
+      <!-- Way 2: pick the doctor first -->
       <div>
         <h3 class="font-serif text-xl font-semibold text-navy">1. Choose your doctor</h3>
         <p v-if="filterHint" class="mt-1 text-sm text-plum/80">{{ filterHint }}</p>
+        <p class="mt-1 text-sm text-navy/55">Or pick a doctor and see all the days they are available.</p>
 
         <div class="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3">
           <button
@@ -308,9 +449,9 @@ const initials = (name: string) =>
       </div>
 
       <!-- Step: Time -->
-      <div v-if="form.date">
+      <div v-if="form.date && form.doctorId">
         <h3 class="font-serif text-xl font-semibold text-navy">3. Pick a time</h3>
-        <p class="mt-1 text-sm text-navy/60">{{ formatDateLabel(form.date) }}</p>
+        <p class="mt-1 text-sm text-navy/60">{{ formatDateLabel(form.date) }} with {{ selectedDoctor?.name }}</p>
 
         <div v-if="timeSlotsForDoctor.length === 0" class="mt-3 text-sm text-navy/50">
           No time slots are set for this day yet. Please call us and we'll confirm a time.
