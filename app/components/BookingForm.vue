@@ -139,8 +139,13 @@ const doctorsOnPrefDate = computed(() => {
     .filter((x) => x.times.length > 0)
 })
 
+// Clearing the preferred date starts fresh: doctor, date and time are reset,
+// and the "Choose your doctor" section comes back.
 const clearPrefDate = () => {
   prefDate.value = ''
+  form.doctorId = ''
+  form.date = ''
+  form.time = ''
 }
 
 // Choosing a doctor from the date panel sets both the doctor and the date.
@@ -150,11 +155,15 @@ const chooseDoctorForDate = async (d: Doctor) => {
   form.date = prefDate.value
 }
 
-// If a doctor is already chosen and is free on the new preferred date, jump to that date.
+// When the preferred date changes: keep the already chosen doctor if they are
+// free on the new date, otherwise reset so the person picks from the date panel.
 watch(prefDate, (v) => {
-  if (!v || !selectedDoctor.value) return
-  if ((selectedDoctor.value.availability[weekdayOf(v)] ?? []).length > 0) {
+  if (!v) return
+  const d = selectedDoctor.value
+  if (d && (d.availability[weekdayOf(v)] ?? []).length > 0) {
     form.date = v
+  } else {
+    form.doctorId = '' // the doctor watcher also resets date and time
   }
 })
 
@@ -379,13 +388,21 @@ const initials = (name: string) =>
           </div>
 
           <p v-else class="mt-3 rounded-xl bg-lavender-soft px-4 py-3 text-sm text-navy/70">
-            No expert has a schedule on this day yet. Please try another date, or choose a doctor below to see their available days.
+            No expert has a schedule on this day yet. Please try another date, or
+            <button
+              type="button"
+              class="font-medium text-plum underline underline-offset-4"
+              @click="clearPrefDate"
+            >
+              clear the date
+            </button>
+            to choose a doctor directly.
           </p>
         </div>
       </div>
 
-      <!-- Way 2: pick the doctor first -->
-      <div>
+      <!-- Way 2: pick the doctor first (only shown when no preferred date is set) -->
+      <div v-if="!prefDate">
         <h3 class="font-serif text-xl font-semibold text-navy">1. Choose your doctor</h3>
         <p v-if="filterHint" class="mt-1 text-sm text-plum/80">{{ filterHint }}</p>
         <p class="mt-1 text-sm text-navy/55">Or pick a doctor and see all the days they are available.</p>
@@ -422,8 +439,8 @@ const initials = (name: string) =>
         </div>
       </div>
 
-      <!-- Step: Date -->
-      <div v-if="form.doctorId">
+      <!-- Step: Date (hidden when a preferred date is already chosen) -->
+      <div v-if="form.doctorId && !prefDate">
         <h3 class="font-serif text-xl font-semibold text-navy">2. Pick an available date</h3>
 
         <p v-if="availableDates.length === 0" class="mt-3 text-sm text-navy/50">
@@ -450,7 +467,7 @@ const initials = (name: string) =>
 
       <!-- Step: Time -->
       <div v-if="form.date && form.doctorId">
-        <h3 class="font-serif text-xl font-semibold text-navy">3. Pick a time</h3>
+        <h3 class="font-serif text-xl font-semibold text-navy">{{ prefDate ? 1 : 3 }}. Pick a time</h3>
         <p class="mt-1 text-sm text-navy/60">{{ formatDateLabel(form.date) }} with {{ selectedDoctor?.name }}</p>
 
         <div v-if="timeSlotsForDoctor.length === 0" class="mt-3 text-sm text-navy/50">
@@ -499,7 +516,7 @@ const initials = (name: string) =>
 
       <!-- Step: Details -->
       <div v-if="form.time || (form.date && timeSlotsForDoctor.length === 0)">
-        <h3 class="font-serif text-xl font-semibold text-navy">4. Your details</h3>
+        <h3 class="font-serif text-xl font-semibold text-navy">{{ prefDate ? 2 : 4 }}. Your details</h3>
 
         <div class="mt-4 grid gap-5 sm:grid-cols-2">
           <label class="block text-sm font-medium text-navy/80">Your name
