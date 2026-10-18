@@ -62,27 +62,27 @@ watch(() => route.path, scrollActiveIntoView)
     >
       <!-- Logo (never shrinks) -->
       <NuxtLink
-        to="/"
-        class="flex shrink-0 items-center gap-2.5"
-        aria-label="Soul Solutions home"
-        v-motion
-        :initial="{ opacity: 0, x: -24 }"
-        :enter="{ opacity: 1, x: 0, transition: { duration: 800, delay: 100 } }"
-      >
-        <img
-          src="/images/logo.png"
-          alt="Soul Solutions logo"
-          class="h-14 w-auto sm:h-16 xl:h-20"
-        />
-        <span class="flex flex-col leading-none">
-          <span class="font-serif text-[1.35rem] text-navy sm:text-[1.6rem] xl:text-[1.8rem]">
-            SOUL SOLUTIONS
-          </span>
-          <span class="mt-1 hidden text-[0.55rem] tracking-[0.26em] text-navy/60 2xl:block">
-            Heal &nbsp;·&nbsp; Understand &nbsp;·&nbsp; Grow
-          </span>
-        </span>
-      </NuxtLink>
+  to="/"
+  class="flex shrink-0 items-center gap-3"
+  aria-label="Soul Solutions home"
+  v-motion
+  :initial="{ opacity: 0, x: -24 }"
+  :enter="{ opacity: 1, x: 0, transition: { duration: 800, delay: 100 } }"
+>
+  <img
+    src="/images/logo.png"
+    alt="Soul Solutions logo"
+    class="h-16 w-auto sm:h-20 xl:h-24"
+  />
+  <span class="flex flex-col leading-none">
+    <span class="whitespace-nowrap font-serif text-[1.25rem] text-navy sm:text-[1.5rem] xl:text-[1.7rem]">
+      Soul Solutions
+    </span>
+    <span class="mt-1 hidden whitespace-nowrap text-[0.55rem] tracking-[0.26em] text-navy/60 2xl:block">
+      Heal &nbsp;·&nbsp; Understand &nbsp;·&nbsp; Grow
+    </span>
+  </span>
+</NuxtLink>
 
       <!-- Desktop links: side scroll, between logo and buttons-->
       <div class="relative hidden min-w-0 flex-1 xl:block">

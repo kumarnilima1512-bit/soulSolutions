@@ -34,7 +34,7 @@ const word = 'mr-[0.26em] inline-block transition-all duration-[900ms] ease-out'
 const heroShown = ref(false)
 onMounted(() => setTimeout(() => (heroShown.value = true), 80))
 const line1 = ['The', 'people', 'behind']
-const line2 = ['Soul', 'Solutions.']
+const line2 = ['Your', 'care']
 
 /* ---------- People (Notion) ---------- */
 const { data: members, error: membersError } = await useFetch<Member[]>('/api/about-team', {
@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
         </nav>
 
         <h1 class="mt-6 font-serif text-[clamp(2.4rem,5.6vw,4.6rem)] font-semibold leading-[1.08] text-navy">
-          <span class="sr-only">The people behind Soul Solutions.</span>
+          <span class="sr-only">The people behind your care.</span>
           <span aria-hidden="true">
             <span
               v-for="(w, i) in line1"
@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
               :key="'b' + i"
               :class="[word, heroShown ? on : off]"
               :style="{ transitionDelay: `${700 + i * 130}ms` }"
-            ><span class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text font-semibold text-transparent">{{ w }}</span></span>
+            ><span class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text text-transparent font-normal italic">{{ w }}</span></span>
           </span>
         </h1>
 
@@ -111,8 +111,7 @@ onBeforeUnmount(() => {
           :class="[base, heroShown ? on : off]"
           style="transition-delay: 1300ms"
         >
-          Meet the founders and the specialists who listen, understand and plan your care
-          together, so you are always seen as a whole person.
+          Meet the psychiatrists and clinical psychologists at Soul Solutions. We bring different perspectives and a shared commitment to understanding you- your story, your relationships and your everyday life—so we can shape care around what matters to you.
         </p>
 
         <div
@@ -124,7 +123,7 @@ onBeforeUnmount(() => {
             href="#founders"
             class="rounded-full border-[1.5px] border-plum/70 px-7 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:scale-[1.03] hover:border-violet hover:bg-white/60"
           >
-            Meet The Whole Team
+            Meet Our Team
           </a>
         </div>
       </div>

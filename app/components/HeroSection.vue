@@ -17,7 +17,7 @@ const reduceMotion = usePreferredReducedMotion()
           :initial="{ opacity: 0, y: 12 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 800, delay: 100 } }"
         >
-          Your mind matters
+        The Holistic Refuge
         </p>
 
         <h1
@@ -29,14 +29,16 @@ const reduceMotion = usePreferredReducedMotion()
           Soul Solutions
         </h1>
 
+      
+
         <p
-          class="mt-3 font-serif text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.2] text-navy/90"
+          class="mt-7 font-serif text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.2] text-navy/90"
           v-motion
           :initial="{ opacity: 0, y: 20 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 900, delay: 650 } }"
         >
-          Because healing isn’t a destination,<br />
-          <em class="italic">it’s a journey.</em>
+          Where the science of Psychiatry, <br />
+          <em class="italic">Meets the human touch</em>
         </p>
 
         <p
@@ -45,9 +47,11 @@ const reduceMotion = usePreferredReducedMotion()
           :initial="{ opacity: 0, y: 16 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 800, delay: 950 } }"
         >
-          Where the science of psychiatry
-          meets the human touch.
-          Soul Solutions brings psychiatrists and clinical psychologists together, so your care is understood deeply, planned jointly and delivered as one
+          <!-- Where the science of psychiatry
+          meets the human touch. -->
+          <!-- Soul Solutions brings psychiatrists and clinical psychologists together, so your care is understood deeply, planned jointly and delivered as one -->
+          <!-- Two specialists. One conversation. One plan.<br /> -->
+          At Soul Solutions, a psychiatrist and a clinical psychologist sit with you for the same hour — biology, thought, relationships and circumstance, all understood before anything is prescribed.
         </p>
 
         <div

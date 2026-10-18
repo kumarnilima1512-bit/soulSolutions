@@ -1,12 +1,7 @@
 <script setup lang="ts">
 const headingWords = ['Guided', 'by', 'care,']
 const headingWords2 = ['driven', 'by', 'hope.']
-
-const missionPoints = [
-  'Provide compassionate, professional and confidential care.',
-  'Make mental health support accessible, in person and online.',
-  'Build a judgment-free space where every feeling is welcome.',
-]
+const missionLines = ['Space to heal.', 'Support to understand.', 'Freedom to grow.']
 
 // Scroll Animation: when section is in viewport, add class "is-in" to trigger CSS animation
 const root = ref<HTMLElement | null>(null)
@@ -50,7 +45,7 @@ const onMove = (e: MouseEvent) => {
 
     <div class="relative z-10 mx-auto max-w-[1240px]">
       <!-- Heading -->
-      <div class="mx-auto max-w-[680px] text-center">
+      <div class="mx-auto max-w-[860px] text-center">
         <p
           class="reveal-block text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70"
           style="--d: 0ms"
@@ -58,23 +53,23 @@ const onMove = (e: MouseEvent) => {
           Our purpose
         </p>
 
-        <h2 class="mt-4 font-serif text-[clamp(2.2rem,4.6vw,3.6rem)] font-semibold leading-[1.1] text-navy">
+        <h2 class="mt-4 font-serif text-[clamp(1.6rem,3.6vw,2.8rem)] font-semibold leading-[1.2] text-navy">
           <span class="sr-only">Guided by care, driven by hope.</span>
           <span aria-hidden="true">
             <span
               v-for="(w, i) in headingWords"
-              :key="w"
+              :key="'a' + i"
               class="reveal-word mr-[0.28em]"
-              :style="{ '--d': `${200 + i * 140}ms` }"
+              :style="{ '--d': `${200 + i * 100}ms` }"
             >{{ w }}</span>
           </span>
           <br />
           <span aria-hidden="true" class="italic">
             <span
               v-for="(w, i) in headingWords2"
-              :key="w"
+              :key="'b' + i"
               class="reveal-word mr-[0.28em]"
-              :style="{ '--d': `${650 + i * 140}ms` }"
+              :style="{ '--d': `${750 + i * 90}ms` }"
             ><span class="vm-shimmer font-medium">{{ w }}</span></span>
           </span>
         </h2>
@@ -103,13 +98,15 @@ const onMove = (e: MouseEvent) => {
                 </div>
               </div>
 
-              <p class="mt-4 text-[0.6rem] font-medium uppercase tracking-[0.2em] text-plum/70 sm:mt-7 sm:text-[0.7rem] sm:tracking-[0.28em]">Our Vision</p>
-              <h3 class="mt-2 font-serif text-lg font-semibold leading-tight text-navy sm:text-3xl lg:text-[2.1rem]">
-                A world where every mind feels heard.
+              <p class="mt-4 text-[0.6rem] font-medium uppercase tracking-[0.2em] text-plum/70 sm:mt-7 sm:text-[0.7rem] sm:tracking-[0.28em]">We see the whole you</p>
+              <h3 class="mt-2 font-serif text-lg font-semibold leading-tight text-navy sm:text-2xl lg:text-[1.8rem]">
+                Care that sees the whole person, not the worst week.
               </h3>
-              <p class="mt-3 max-w-[460px] text-[0.8rem] leading-relaxed text-navy/75 sm:mt-4 sm:text-base">
-                We imagine a future where seeking help is seen as strength, and where everyone has
-                the support they need to heal, understand themselves and grow at their own pace.
+              <p class="mt-3 max-w-[480px] text-[0.75rem] leading-relaxed text-navy/75 sm:mt-4 sm:text-base">
+                Most people reach a clinic at their lowest point, and get treated for that moment
+                alone. We want to change where care begins — identifying patterns early, building
+                skills that hold up in ordinary life, and making prevention a real part of mental
+                health rather than an afterthought.
               </p>
             </div>
           </article>
@@ -137,27 +134,15 @@ const onMove = (e: MouseEvent) => {
               </div>
 
               <p class="mt-4 text-[0.6rem] font-medium uppercase tracking-[0.2em] text-plum/70 sm:mt-7 sm:text-[0.7rem] sm:tracking-[0.28em]">Our Mission</p>
-              <h3 class="mt-2 font-serif text-lg font-semibold leading-tight text-navy sm:text-3xl lg:text-[2.1rem]">
-                Support you, one step at a time.
+              <h3 class="mt-2 font-serif text-lg font-semibold leading-tight text-navy sm:text-2xl lg:text-[1.8rem]">
+                <span v-for="line in missionLines" :key="line" class="block">{{ line }}</span>
               </h3>
 
-              <ul class="mt-3 space-y-2 sm:mt-5 sm:space-y-3">
-                <li
-                  v-for="(point, i) in missionPoints"
-                  :key="point"
-                  class="flex items-start gap-2 text-[0.8rem] leading-relaxed text-navy/75 sm:gap-3 sm:text-base"
-                >
-                  <span
-                    class="mt-[0.2rem] flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-plum/15 text-plum sm:mt-[0.3rem] sm:h-5 sm:w-5"
-                    aria-hidden="true"
-                  >
-                    <svg viewBox="0 0 16 16" class="vm-tick h-2.5 w-2.5 sm:h-3 sm:w-3" :style="{ '--d': `${1200 + i * 300}ms` }" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m3.5 8.5 3 3 6-7" />
-                    </svg>
-                  </span>
-                  {{ point }}
-                </li>
-              </ul>
+              <p class="mt-3 max-w-[480px] text-[0.75rem] leading-relaxed text-navy/75 sm:mt-4 sm:text-base">
+                Our mission is to combine compassionate care with scientific understanding, helping
+                people navigate distress, understand themselves and move towards a life that feels
+                meaningful to them.
+              </p>
             </div>
           </article>
         </div>
