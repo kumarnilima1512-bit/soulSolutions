@@ -298,7 +298,7 @@ const initials = (name: string) =>
       <!-- Service: decides which experts are shown -->
       <div v-if="services.length > 0">
         <label class="text-sm font-medium text-navy/80">
-          What do you need support with? <span class="text-navy/40">(optional)</span>
+          Choose your specialist  <span class="text-navy/40">(optional)</span>
         </label>
         <select v-model="form.serviceId" :class="field">
           <option value="">Not sure yet</option>
