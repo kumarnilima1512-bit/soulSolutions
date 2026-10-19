@@ -126,8 +126,10 @@ const year = new Date().getFullYear()
                   <path d="M12 7v5l3 2" />
                 </svg>
               </span>
-              <span>9:00 AM – 9:00 PM (Offline)</span>
-              <span>9:00 AM - 12:00 AM (Online)</span>
+              <div class="min-w-0">
+                <p>9:00 AM – 9:00 PM (Offline)</p>
+                <p>9:00 AM – 12:00 AM (Online)</p>
+              </div>
             </li>
 
             <!-- Location + appointment note -->
@@ -160,18 +162,28 @@ const year = new Date().getFullYear()
             </li>
           </ul>
 
-          <NuxtLink
-            to="/book"
-            class="group mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 sm:mt-7 sm:px-6 sm:py-3 sm:text-sm"
-          >
-            Book a Session
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-          </NuxtLink>
+          <!-- Action buttons -->
+          <div class="mt-5 flex flex-wrap items-center gap-3 sm:mt-7">
+            <NuxtLink
+              to="/book"
+              class="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-sm"
+            >
+              Book a Session
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </NuxtLink>
+
+            <button
+              type="button"
+              class="inline-flex items-center rounded-full bg-white px-5 py-2.5 text-xs font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-sm"
+              >
+              Contact Us
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Bottom bar -->
-      <div class="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-5 text-center text-[0.68rem] text-white/50 sm:mt-12 sm:flex-row sm:gap-3 sm:pt-6 sm:text-left sm:text-xs">
+      <div class="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-5 text-center text-[0.68rem] text-white/50 sm:mt-12 sm:flex-row sm:gap-3 sm:text-left sm:text-xs">
         <p>&copy; {{ year }} Soul Solutions. All rights reserved.</p>
         <p class="tracking-[0.2em] sm:tracking-[0.25em]">HEAL &nbsp;·&nbsp; UNDERSTAND &nbsp;·&nbsp; GROW</p>
       </div>

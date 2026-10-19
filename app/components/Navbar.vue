@@ -78,9 +78,9 @@ watch(() => route.path, scrollActiveIntoView)
     <span class="whitespace-nowrap font-serif text-[1.25rem] text-navy sm:text-[1.5rem] xl:text-[1.7rem]">
       Soul Solutions
     </span>
-    <span class="mt-1 hidden whitespace-nowrap text-[0.55rem] tracking-[0.26em] text-navy/60 2xl:block">
+    <!-- <span class="mt-1 hidden whitespace-nowrap text-[0.55rem] tracking-[0.26em] text-navy/60 2xl:block">
       Heal &nbsp;·&nbsp; Understand &nbsp;·&nbsp; Grow
-    </span>
+    </span>  -->
   </span>
 </NuxtLink>
 

@@ -6,9 +6,13 @@ const props = defineProps<{
   title: string
   members: Member[]
   tone?: 'white' | 'lavender'
+  variant?: 'default' | 'team' // 'team' = photo, name, designation only
 }>()
 
 const emit = defineEmits<{ select: [member: Member] }>()
+
+// Pictures that failed to load fall back to the initials circle
+const failedPhotos = ref(new Set<string>())
 
 /* Scroll reveal */
 const el = ref<HTMLElement | null>(null)
@@ -29,6 +33,7 @@ const sectionBg = computed(() => (props.tone === 'lavender' ? 'bg-lavender-soft'
 const cardBg = computed(() =>
   props.tone === 'lavender' ? 'bg-white' : 'bg-gradient-to-br from-lavender-soft via-white to-[#fff6ee]',
 )
+const isTeam = computed(() => props.variant === 'team')
 </script>
 
 <template>
@@ -57,11 +62,12 @@ const cardBg = computed(() =>
           >
             <div class="mx-auto h-24 w-24 overflow-hidden rounded-full ring-4 ring-white">
               <img
-                v-if="m.photo_url"
+                v-if="m.photo_url && !failedPhotos.has(m.id)"
                 :src="m.photo_url"
                 :alt="`Portrait of ${m.name}`"
                 loading="lazy"
                 class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                @error="failedPhotos.add(m.id)"
               />
               <div
                 v-else
@@ -72,30 +78,36 @@ const cardBg = computed(() =>
               </div>
             </div>
 
-            <p v-if="departmentLabel(m.department)" class="mt-4 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
-              {{ departmentLabel(m.department) }}
-            </p>
+            <!-- Team variant: name + designation only -->
+            <template v-if="isTeam">
+              <h3 class="mt-4 font-serif text-xl font-semibold leading-snug text-navy">{{ m.name }}</h3>
+              <p v-if="m.designation" class="mt-1 text-sm text-navy/60">{{ m.designation }}</p>
+            </template>
 
-            <!-- Name with qualifications in brackets -->
-            <h3 class="mt-1 font-serif text-xl font-semibold leading-snug text-navy">
-              {{ m.name }}<span v-if="m.qualifications" class="ml-1 font-sans text-[0.8rem] font-medium text-plum">({{ m.qualifications }})</span>
-            </h3>
+            <!-- Default variant (mentors) -->
+            <template v-else>
+              <p v-if="departmentLabel(m.department)" class="mt-4 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
+                {{ departmentLabel(m.department) }}
+              </p>
+              <h3 class="mt-1 font-serif text-xl font-semibold leading-snug text-navy">
+                {{ m.name }}<span v-if="m.qualifications" class="ml-1 font-sans text-[0.8rem] font-medium text-plum">({{ m.qualifications }})</span>
+              </h3>
 
-            <ul v-if="m.specializations.length" class="mt-4 flex flex-wrap justify-center gap-1.5">
-              <li
-                v-for="s in m.specializations.slice(0, 3)"
-                :key="s"
-                class="rounded-full px-2.5 py-1 text-[0.7rem] text-plum"
-                :class="tone === 'lavender' ? 'bg-lavender-soft' : 'bg-white'"
-              >
-                {{ s }}
-              </li>
-              <li v-if="m.specializations.length > 3" class="px-1 py-1 text-[0.7rem] text-navy/50">
-                +{{ m.specializations.length - 3 }} more
-              </li>
-            </ul>
+              <ul v-if="m.specializations.length" class="mt-4 flex flex-wrap justify-center gap-1.5">
+                <li
+                  v-for="s in m.specializations.slice(0, 3)"
+                  :key="s"
+                  class="rounded-full px-2.5 py-1 text-[0.7rem] text-plum"
+                  :class="tone === 'lavender' ? 'bg-lavender-soft' : 'bg-white'"
+                >
+                  {{ s }}
+                </li>
+                <li v-if="m.specializations.length > 3" class="px-1 py-1 text-[0.7rem] text-navy/50">
+                  +{{ m.specializations.length - 3 }} more
+                </li>
+              </ul>
+            </template>
 
-            <!-- Role, experience, institutions and bio are inside the full profile -->
             <button
               type="button"
               class="mt-auto pt-5 text-sm font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline"

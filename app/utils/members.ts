@@ -5,6 +5,7 @@ export interface Member {
   id: string
   name: string
   role: string
+  designation: string
   department: 'psychiatry' | 'psychology' | ''
   type: 'founder' | 'mentor' | 'professional'
   qualifications: string
@@ -12,6 +13,7 @@ export interface Member {
   institutions: string[]
   specializations: string[]
   bio: string | null
+  know_more: string
   photo_url: string | null
   order: number
 }

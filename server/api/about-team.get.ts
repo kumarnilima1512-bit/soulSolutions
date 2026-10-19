@@ -16,6 +16,7 @@ export interface TeamMember {
   id: string
   name: string
   role: string
+  designation: string
   department: 'psychiatry' | 'psychology' | ''
   type: 'founder' | 'mentor' | 'professional'
   qualifications: string
@@ -23,6 +24,7 @@ export interface TeamMember {
   institutions: string[]
   specializations: string[]
   bio: string | null
+  know_more: string
   photo_url: string | null
   order: number
 }
@@ -90,14 +92,14 @@ const readFlexible = (p: any): string => {
   return readText(p).replace(/\s*\n+\s*/g, ', ')
 }
 
-const readPhoto = (p: any): string | null => {
+// Does the row have a photo at all? (the picture itself is served by /api/about-photo)
+const hasPhoto = (p: any): boolean => {
   const f = (p?.files?.[0] ?? null) as NotionFile | null
-  return f?.file?.url ?? f?.external?.url ?? null
+  return !!(f?.file?.url ?? f?.external?.url)
 }
 
 /* ---------- Handler ---------- */
-// Notion-hosted file URLs expire after about one hour, so the cache is kept short.
-// The cache is bypassed in development so changes in Notion show up right away.
+// Short cache (30s) so Notion edits show up quickly. Bypassed in development.
 export default defineCachedEventHandler(
   async () => {
     const config = useRuntimeConfig()
@@ -152,6 +154,9 @@ export default defineCachedEventHandler(
             id: page.id as string,
             name,
             role: readText(getProp(p, 'Role')),
+            designation:
+              readFlexible(getFirstProp(p, ['Designation', 'Designations'])) ||
+              readText(getProp(p, 'Role')),
             department: readDepartment(getProp(p, 'Department')),
             type: readType(getProp(p, 'Type')),
             qualifications: readFlexible(
@@ -161,7 +166,12 @@ export default defineCachedEventHandler(
             institutions: readList(getProp(p, 'Institutions')),
             specializations: readList(getProp(p, 'Specializations')),
             bio: readText(getProp(p, 'Bio')) || null,
-            photo_url: readPhoto(getProp(p, 'Photo')),
+            know_more: readFlexible(getFirstProp(p, ['KnowMore', 'Know More', 'Know more'])),
+            // Served through our own server so the link never expires.
+            // ?v= changes when the row is edited, so a new photo shows up.
+            photo_url: hasPhoto(getProp(p, 'Photo'))
+              ? `/api/about-photo/${page.id}?v=${encodeURIComponent(page.last_edited_time ?? '')}`
+              : null,
             order: readNumber(getProp(p, 'Order')) ?? 9999,
           } satisfies TeamMember,
         }
@@ -178,7 +188,8 @@ export default defineCachedEventHandler(
   },
   {
     name: 'about-team',
-    maxAge: 60 * 20,
+    maxAge: 30,
+    swr: false,
     shouldBypassCache: () => import.meta.dev,
   },
 )

@@ -34,7 +34,7 @@ const word = 'mr-[0.26em] inline-block transition-all duration-[900ms] ease-out'
 const heroShown = ref(false)
 onMounted(() => setTimeout(() => (heroShown.value = true), 80))
 const line1 = ['The', 'people', 'behind']
-const line2 = ['Your', 'care']
+const line2 = ['Soul', 'Solutions.']
 
 /* ---------- People (Notion) ---------- */
 const { data: members, error: membersError } = await useFetch<Member[]>('/api/about-team', {
@@ -51,11 +51,41 @@ const founders = computed(() => byType('founder'))
 const mentors = computed(() => byType('mentor'))
 const professionals = computed(() => byType('professional'))
 
-// The final "Our team" section lists everyone: founders first, then mentors, then professionals
+// The final "The people who care for you" section lists everyone: founders first, then mentors, then professionals
 const everyone = computed(() => [...founders.value, ...mentors.value, ...professionals.value])
 
-/* ---------- Profile dialog ---------- */
+// Pictures that failed to load fall back to the initials circle
+const failedPhotos = ref(new Set<string>())
+
+/* ---------- Profile dialog ----------
+   What the dialog shows depends on where the profile was opened:
+   - Founders section  -> "Know more": photo, name, role and the Bio column only
+   - Mentors section   -> full profile, Bio column at the bottom
+   - "The people who care for you" -> full profile, KnowMore column at the bottom (no bio) */
+type ProfileSource = 'founders' | 'mentors' | 'team'
 const selected = ref<Member | null>(null)
+const profileSource = ref<ProfileSource>('founders')
+
+const openProfile = (m: Member, source: ProfileSource) => {
+  profileSource.value = source
+  selected.value = m
+}
+
+const isFounderView = computed(() => profileSource.value === 'founders')
+
+const aboutText = computed(() => {
+  const m = selected.value
+  if (!m) return ''
+  return profileSource.value === 'team' ? m.know_more : (m.bio ?? '')
+})
+
+// In the team section the subtitle is the designation; elsewhere it is the role
+const subtitle = computed(() => {
+  const m = selected.value
+  if (!m) return ''
+  return profileSource.value === 'team' ? m.designation || m.role : m.role
+})
+
 onKeyStroke('Escape', () => (selected.value = null))
 watch(selected, (v) => {
   if (import.meta.client) document.body.style.overflow = v ? 'hidden' : ''
@@ -86,7 +116,7 @@ onBeforeUnmount(() => {
         </nav>
 
         <h1 class="mt-6 font-serif text-[clamp(2.4rem,5.6vw,4.6rem)] font-semibold leading-[1.08] text-navy">
-          <span class="sr-only">The people behind your care.</span>
+          <span class="sr-only">The people behind Soul Solutions.</span>
           <span aria-hidden="true">
             <span
               v-for="(w, i) in line1"
@@ -102,7 +132,7 @@ onBeforeUnmount(() => {
               :key="'b' + i"
               :class="[word, heroShown ? on : off]"
               :style="{ transitionDelay: `${700 + i * 130}ms` }"
-            ><span class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text text-transparent font-normal italic">{{ w }}</span></span>
+            ><span class="animate-shimmer bg-[linear-gradient(90deg,#3f2e80,#7c5cc4,#e89a7a,#7c5cc4,#3f2e80)] bg-[length:200%_auto] bg-clip-text font-semibold text-transparent">{{ w }}</span></span>
           </span>
         </h1>
 
@@ -111,7 +141,8 @@ onBeforeUnmount(() => {
           :class="[base, heroShown ? on : off]"
           style="transition-delay: 1300ms"
         >
-          Meet the psychiatrists and clinical psychologists at Soul Solutions. We bring different perspectives and a shared commitment to understanding you- your story, your relationships and your everyday life—so we can shape care around what matters to you.
+          Meet the founders and the specialists who listen, understand and plan your care
+          together, so you are always seen as a whole person.
         </p>
 
         <div
@@ -123,7 +154,7 @@ onBeforeUnmount(() => {
             href="#founders"
             class="rounded-full border-[1.5px] border-plum/70 px-7 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:scale-[1.03] hover:border-violet hover:bg-white/60"
           >
-            Meet Our Team
+            Meet The Whole Team
           </a>
         </div>
       </div>
@@ -164,18 +195,19 @@ onBeforeUnmount(() => {
             :class="[base, foundersShown ? on : off]"
             :style="{ transitionDelay: `${200 + i * 180}ms` }"
           >
-            <!-- Card: photo, department, name (qualifications), specializations, View full profile -->
+            <!-- Card: photo, name and role only -->
             <article class="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] bg-gradient-to-br from-lavender-soft via-white to-[#fff6ee] p-4 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)] sm:rounded-[2rem] sm:p-8 lg:p-10">
               <div class="text-center">
                 <div class="relative mx-auto h-24 w-24 sm:h-40 sm:w-40 lg:h-44 lg:w-44">
                   <span class="absolute -inset-2 animate-ring rounded-full border border-violet/30 max-md:animate-none" aria-hidden="true" />
                   <div class="h-full w-full overflow-hidden rounded-full ring-4 ring-white">
                     <img
-                      v-if="f.photo_url"
+                      v-if="f.photo_url && !failedPhotos.has(f.id)"
                       :src="f.photo_url"
                       :alt="`Portrait of ${f.name}`"
                       loading="lazy"
                       class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      @error="failedPhotos.add(f.id)"
                     />
                     <div
                       v-else
@@ -187,35 +219,18 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
 
-                <p v-if="departmentLabel(f.department)" class="mt-4 text-[0.55rem] font-medium uppercase tracking-[0.18em] text-plum/60 sm:mt-6 sm:text-[0.65rem] sm:tracking-[0.2em]">
-                  {{ departmentLabel(f.department) }}
-                </p>
-
-                <h3 class="mt-1 font-serif text-base font-semibold leading-snug text-navy sm:text-2xl lg:text-[1.7rem]">
-                  {{ f.name }}<span v-if="f.qualifications" class="ml-1 font-sans text-[0.7rem] font-medium text-plum sm:text-[0.9rem]">({{ f.qualifications }})</span>
+                <h3 class="mt-4 font-serif text-base font-semibold leading-snug text-navy sm:mt-6 sm:text-2xl lg:text-[1.7rem]">
+                  {{ f.name }}
                 </h3>
+                <p v-if="f.role" class="mt-1 text-[0.72rem] leading-snug text-navy/60 sm:mt-1.5 sm:text-sm">{{ f.role }}</p>
               </div>
 
-              <ul v-if="f.specializations.length" class="mt-3 flex flex-wrap justify-center gap-1.5 sm:mt-5 sm:gap-2">
-                <li
-                  v-for="s in f.specializations.slice(0, 3)"
-                  :key="s"
-                  class="rounded-full bg-white px-2 py-0.5 text-[0.6rem] text-plum shadow-[0_2px_10px_rgba(63,46,128,0.08)] sm:px-3 sm:py-1 sm:text-[0.78rem]"
-                >
-                  {{ s }}
-                </li>
-                <li v-if="f.specializations.length > 3" class="px-1 py-0.5 text-[0.6rem] text-navy/50 sm:text-[0.78rem]">
-                  +{{ f.specializations.length - 3 }} more
-                </li>
-              </ul>
-
-              <!-- Role, experience, institutions and bio are inside the full profile -->
               <button
                 type="button"
                 class="mt-auto inline-flex items-center justify-center gap-1.5 pt-4 text-center text-[0.75rem] font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline sm:pt-7 sm:text-sm"
-                @click="selected = f"
+                @click="openProfile(f, 'founders')"
               >
-                View full profile
+                Know more
                 <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
@@ -227,7 +242,13 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============ 3. MENTORS ============ -->
-    <AboutMemberSection v-if="mentors.length" title="Our mentors" :members="mentors" tone="white" @select="selected = $event" />
+    <AboutMemberSection
+      v-if="mentors.length"
+      title="Our mentors"
+      :members="mentors"
+      tone="white"
+      @select="openProfile($event, 'mentors')"
+    />
 
     <!-- ============ 4. OUR STORY ============ -->
     <section ref="storyEl" class="relative overflow-hidden bg-cream px-6 py-20 lg:px-10 lg:py-28">
@@ -293,8 +314,15 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- ============ 5. TEAM (founders, mentors and professionals together) ============ -->
-    <AboutMemberSection v-if="everyone.length" title="The people who care for you" :members="everyone" tone="lavender" @select="selected = $event" />
+    <!-- ============ 5. THE PEOPLE WHO CARE FOR YOU: name + designation, profile shows KnowMore ============ -->
+    <AboutMemberSection
+      v-if="everyone.length"
+      title="The people who care for you"
+      :members="everyone"
+      tone="lavender"
+      variant="team"
+      @select="openProfile($event, 'team')"
+    />
 
     <!-- ============ 6. CTA ============ -->
     <CtaBanner
@@ -304,7 +332,7 @@ onBeforeUnmount(() => {
       button="Book a Joint Consultation"
     />
 
-    <!-- ============ PROFILE DIALOG (everything is here) ============ -->
+    <!-- ============ PROFILE DIALOG ============ -->
     <Transition
       enter-active-class="transition duration-300 ease-out"
       enter-from-class="opacity-0"
@@ -334,10 +362,11 @@ onBeforeUnmount(() => {
           <div class="text-center">
             <div class="mx-auto h-28 w-28 overflow-hidden rounded-full ring-4 ring-lavender-soft">
               <img
-                v-if="selected.photo_url"
+                v-if="selected.photo_url && !failedPhotos.has(selected.id)"
                 :src="selected.photo_url"
                 :alt="`Portrait of ${selected.name}`"
                 class="h-full w-full object-cover object-top"
+                @error="failedPhotos.add(selected.id)"
               />
               <div
                 v-else
@@ -347,19 +376,31 @@ onBeforeUnmount(() => {
                 {{ initials(selected.name) }}
               </div>
             </div>
-            <p v-if="departmentLabel(selected.department)" class="mt-5 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
+
+            <!-- Department label: not shown for founders -->
+            <p
+              v-if="!isFounderView && departmentLabel(selected.department)"
+              class="mt-5 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60"
+            >
               {{ departmentLabel(selected.department) }}
             </p>
 
-            <h3 class="mt-1 font-serif text-2xl font-semibold text-navy">
-              {{ selected.name }}<span v-if="selected.qualifications" class="ml-1 font-sans text-[0.95rem] font-medium text-plum">({{ selected.qualifications }})</span>
+            <!-- Founders: name only. Others: degree in brackets after the name -->
+            <h3 class="font-serif text-2xl font-semibold text-navy" :class="isFounderView ? 'mt-5' : 'mt-1'">
+              {{ selected.name }}<span
+                v-if="!isFounderView && selected.qualifications"
+                class="ml-1 font-sans text-[0.95rem] font-medium text-plum"
+              >({{ selected.qualifications }})</span>
             </h3>
 
-            <p v-if="selected.role" class="mt-1 text-sm text-navy/60">{{ selected.role }}</p>
-            <p v-if="selected.experience_years" class="mt-1 text-[0.8rem] text-navy/60">{{ selected.experience_years }}+ years of experience</p>
+            <p v-if="subtitle" class="mt-1 text-sm text-navy/60">{{ subtitle }}</p>
+            <p v-if="!isFounderView && selected.experience_years" class="mt-1 text-[0.8rem] text-navy/60">
+              {{ selected.experience_years }}+ years of experience
+            </p>
           </div>
 
-          <div v-if="selected.specializations.length" class="mt-7">
+          <!-- Specializations and institutions: not shown for founders -->
+          <div v-if="!isFounderView && selected.specializations.length" class="mt-7">
             <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Specializations</p>
             <ul class="mt-2 flex flex-wrap gap-2">
               <li v-for="s in selected.specializations" :key="s" class="rounded-full bg-lavender-soft px-3 py-1 text-[0.8rem] text-plum">
@@ -368,7 +409,7 @@ onBeforeUnmount(() => {
             </ul>
           </div>
 
-          <div v-if="selected.institutions.length" class="mt-6">
+          <div v-if="!isFounderView && selected.institutions.length" class="mt-6">
             <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Institutions</p>
             <ul class="mt-2 space-y-1 text-[0.92rem] text-navy/75">
               <li v-for="inst in selected.institutions" :key="inst" class="flex gap-2">
@@ -378,7 +419,8 @@ onBeforeUnmount(() => {
             </ul>
           </div>
 
-          <p v-if="selected.bio" class="mt-6 text-[0.95rem] leading-relaxed text-navy/70">{{ selected.bio }}</p>
+          <!-- Founders / Mentors: Bio column. "The people who care for you": KnowMore column -->
+          <p v-if="aboutText" class="mt-6 whitespace-pre-line text-[0.95rem] leading-relaxed text-navy/70">{{ aboutText }}</p>
         </div>
       </div>
     </Transition>
