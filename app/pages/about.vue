@@ -403,7 +403,7 @@ onBeforeUnmount(() => {
           <div v-if="!isFounderView && selected.specializations.length" class="mt-7">
             <p class="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">Specializations</p>
             <ul class="mt-2 flex flex-wrap gap-2">
-              <li v-for="s in selected.specializations" :key="s" class="rounded-full bg-lavender-soft px-3 py-1 text-[0.8rem] text-plum">
+              <li v-for="s in selected.specializations" :key="s" class="max-w-full break-words rounded-2xl bg-lavender-soft px-3.5 py-2 text-[0.85rem] leading-snug text-plum">
                 {{ s }}
               </li>
             </ul>

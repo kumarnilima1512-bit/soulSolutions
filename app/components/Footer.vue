@@ -172,12 +172,15 @@ const year = new Date().getFullYear()
               <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </NuxtLink>
 
-            <button
-              type="button"
-              class="inline-flex items-center rounded-full bg-white px-5 py-2.5 text-xs font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-sm"
+            <a
+              href="https://wa.me/919874689332"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Contact us on WhatsApp"
+              class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-medium text-plum transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-sm"
               >
-              Contact Us
-            </button>
+                Contact Us
+              </a>
           </div>
         </div>
       </div>

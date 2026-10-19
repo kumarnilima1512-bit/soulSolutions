@@ -93,11 +93,11 @@ const isTeam = computed(() => props.variant === 'team')
                 {{ m.name }}<span v-if="m.qualifications" class="ml-1 font-sans text-[0.8rem] font-medium text-plum">({{ m.qualifications }})</span>
               </h3>
 
-              <ul v-if="m.specializations.length" class="mt-4 flex flex-wrap justify-center gap-1.5">
+              <ul v-if="m.specializations.length" class="mt-4 flex flex-wrap justify-center gap-2">
                 <li
                   v-for="s in m.specializations.slice(0, 3)"
                   :key="s"
-                  class="rounded-full px-2.5 py-1 text-[0.7rem] text-plum"
+                  class="max-w-full rounded-2xl px-3.5 py-2 text-left text-[0.78rem] leading-snug text-plum break-words"
                   :class="tone === 'lavender' ? 'bg-lavender-soft' : 'bg-white'"
                 >
                   {{ s }}
