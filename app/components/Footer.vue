@@ -41,7 +41,7 @@ const year = new Date().getFullYear()
           </NuxtLink>
 
           <p class="mt-3 max-w-[340px] text-[0.75rem] leading-relaxed text-white/70 sm:mt-5 sm:text-[0.95rem]">
-            Because healing isn't a destination, it's a journey.
+            Where the science of psychiatry meets human touch. <br />
             <span class="hidden sm:inline">A safe space where psychiatry and psychology work together for you.</span>
           </p>
 

@@ -37,8 +37,8 @@ const reduceMotion = usePreferredReducedMotion()
           :initial="{ opacity: 0, y: 20 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 900, delay: 650 } }"
         >
-          Where the science of Psychiatry, <br />
-          <em class="italic">Meets the human touch</em>
+          Where the science of psychiatry <br />
+          <em class="italic">meets the human touch</em>
         </p>
 
         <p

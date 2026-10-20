@@ -141,8 +141,7 @@ onBeforeUnmount(() => {
           :class="[base, heroShown ? on : off]"
           style="transition-delay: 1300ms"
         >
-          Meet the founders and the specialists who listen, understand and plan your care
-          together, so you are always seen as a whole person.
+          Meet the founders and the specialists who listen, understand and create a holistic plan individualised, just for you.
         </p>
 
         <div

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const headingWords = ['Guided', 'by', 'care,']
 const headingWords2 = ['driven', 'by', 'hope.']
-const missionLines = ['Space to heal.', 'Support to understand.', 'Freedom to grow.']
+const missionLines = ['Space to heal', 'Support to understand', 'Freedom to grow']
 
 // Scroll Animation: when section is in viewport, add class "is-in" to trigger CSS animation
 const root = ref<HTMLElement | null>(null)
