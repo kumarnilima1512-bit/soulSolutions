@@ -201,12 +201,19 @@ const steps = [
           <div class="relative mx-auto max-w-[480px]">
             <div class="absolute -inset-4 -z-0 rounded-t-[999px] rounded-b-[2.5rem] bg-gradient-to-b from-lavender via-peach/60 to-transparent blur-sm" aria-hidden="true" />
             <div class="relative aspect-[4/5] animate-float overflow-hidden rounded-t-[999px] rounded-b-[2.5rem] shadow-[0_30px_80px_rgba(63,46,128,0.18)] max-md:animate-none">
-              <img
-                src="/images/logo.png"
-                alt="Soul Solutions logo"
-                class="h-full w-full object-contain"
-                loading="lazy"
-              />
+              
+              
+<video
+  src="/video/approaches.mp4"
+  class="h-full w-full object-contain scale-110 -translate-y-9"
+  autoplay
+  muted
+  loop
+  playsinline
+></video>
+
+
+              
             </div>
             <p class="absolute -bottom-5 -right-2 rotate-[-6deg] rounded-2xl bg-white px-5 py-3 font-script text-2xl text-plum shadow-[0_12px_40px_rgba(63,46,128,0.15)] sm:-right-6">
               It's okay to feel.
