@@ -70,9 +70,9 @@ watch(() => route.path, scrollActiveIntoView)
   :enter="{ opacity: 1, x: 0, transition: { duration: 800, delay: 100 } }"
 >
   <img
-    src="/images/logo.png"
+    src="/images/logo1.png"
     alt="Soul Solutions logo"
-    class="h-16 w-auto sm:h-20 xl:h-24"
+    class="h-16 w-auto sm:h-20 xl:h-20"
   />
   <span class="flex flex-col leading-none">
     <span class="whitespace-nowrap font-serif text-[1.25rem] text-navy sm:text-[1.5rem] xl:text-[1.7rem]">
