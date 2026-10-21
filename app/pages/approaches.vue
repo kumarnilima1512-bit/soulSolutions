@@ -314,7 +314,7 @@ const steps = [
     <!-- ============ 5. CTA (quote only, no button) ============ -->
     <CtaBanner
       tone="cream"
-      title="Progress isn't always becoming someone new, sometimes it's understanding who you've always been"
+      title="Every symptom has a context. Every person has a story. Meaningful care makes room for both."
       text=""
       button=""
     />
