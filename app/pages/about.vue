@@ -388,11 +388,16 @@ onBeforeUnmount(() => {
 
             <!-- Founders: name only. Others: degree in brackets after the name -->
             <h3 class="font-serif text-2xl font-semibold text-navy" :class="isFounderView ? 'mt-5' : 'mt-1'">
-              {{ selected.name }}<span
-                v-if="!isFounderView && selected.qualifications"
-                class="ml-1 font-sans text-[0.95rem] font-medium text-plum"
-              >({{ selected.qualifications }})</span>
+              {{ selected.name }}
             </h3>
+
+            <p
+                v-if="!isFounderView && selected.qualifications"
+                class="mt-1 text-[0.95rem] font-medium text-plum"
+              >
+                {{ selected.qualifications }}
+            </p>
+
 
             <p v-if="subtitle" class="mt-1 text-sm text-navy/60">{{ subtitle }}</p>
             <p v-if="!isFounderView && selected.experience_years" class="mt-1 text-[0.8rem] text-navy/60">
