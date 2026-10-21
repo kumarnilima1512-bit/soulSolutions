@@ -8,6 +8,11 @@ const socials = [
     label: 'Facebook',
     href: 'https://www.facebook.com/share/1Cf4HV529u/',
   },
+
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/soul-solutions-private-limited/', 
+  },
 ]
 
 const links = [
@@ -46,28 +51,35 @@ const year = new Date().getFullYear()
           </p>
 
           <!-- Social icons (same round style as phone and email) -->
-          <div class="mt-4 flex items-center gap-2.5 sm:mt-6 sm:gap-3">
-            <a
-              v-for="s in socials"
-              :key="s.label"
-              :href="s.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              :aria-label="`Soul Solutions on ${s.label}`"
-              class="group flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-plum sm:h-10 sm:w-10"
-            >
-              <!-- Instagram -->
-              <svg v-if="s.label === 'Instagram'" viewBox="0 0 24 24" class="h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
-              </svg>
-              <!-- Facebook -->
-              <svg v-else viewBox="0 0 24 24" class="h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M14 8h2.5V4.5H14A4 4 0 0 0 10 8.5V11H7.5v3.5H10V21h3.5v-6.5H16l.5-3.5h-3V8.8c0-.5.3-.8.8-.8Z" />
-              </svg>
-            </a>
-          </div>
+        <div class="mt-4 flex items-center gap-2.5 sm:mt-6 sm:gap-3">
+          <a
+    v-for="s in socials"
+    :key="s.label"
+    :href="s.href"
+    target="_blank"
+    rel="noopener noreferrer"
+    :aria-label="`Soul Solutions on ${s.label}`"
+    class="group flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-plum sm:h-10 sm:w-10"
+  >
+    <!-- Instagram -->
+    <svg v-if="s.label === 'Instagram'" viewBox="0 0 24 24" class="h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
+    </svg>
+
+    <!-- Facebook -->
+    <svg v-else-if="s.label === 'Facebook'" viewBox="0 0 24 24" class="h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M14 8h2.5V4.5H14A4 4 0 0 0 10 8.5V11H7.5v3.5H10V21h3.5v-6.5H16l.5-3.5h-3V8.8c0-.5.3-.8.8-.8Z" />
+    </svg>
+
+    <!-- LinkedIn -->
+    <svg v-else viewBox="0 0 24 24" class="h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <path d="M8 10.5V16M8 7.8v.1M12 16v-5.5M12 12.8c0-1.4 1-2.3 2.3-2.3s2.2.9 2.2 2.4V16" />
+    </svg>
+  </a>
+</div>
 
           <!-- Phone + email, right under the social icons -->
           <ul class="mt-4 space-y-3 text-[0.78rem] text-white/80 sm:mt-5 sm:space-y-4 sm:text-[0.95rem]">
