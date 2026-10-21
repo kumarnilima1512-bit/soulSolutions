@@ -273,14 +273,10 @@ onBeforeUnmount(() => {
           <p :class="[base, storyShown ? on : off]" style="transition-delay: 250ms">
             Soul Solutions began with a quiet belief: no one should have to carry their struggles
             alone, and being truly understood is the first step towards healing.
-          </p>
-          <p :class="[base, storyShown ? on : off]" style="transition-delay: 450ms">
             Too often, care is scattered, with each part of a person's story seen in isolation. So we
             chose to do it differently. Psychiatrists and clinical psychologists sit together,
             listen together and plan together, so that you are cared for as a whole person, not
             as a diagnosis.
-          </p>
-          <p :class="[base, storyShown ? on : off]" style="transition-delay: 650ms">
             Some days, growth can feel like climbing a mountain. But change rarely arrives in one
             great leap. It comes in small, brave steps: one honest conversation, one deep breath,
             one more day of trying. We walk those steps beside you.
