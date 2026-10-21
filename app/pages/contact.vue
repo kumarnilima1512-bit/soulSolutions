@@ -80,6 +80,9 @@ const info = [
             </span>
           </component>
 
+          <!-- QueryBox-->
+          <QuickQuery class="sm:col-span-2 lg:col-span-1" />
+
           <div class="rounded-[1.25rem] bg-lavender-soft p-5 text-[0.82rem] leading-relaxed text-navy/75 sm:col-span-2 sm:rounded-[1.75rem] sm:p-6 sm:text-sm lg:col-span-1">
             <p class="font-medium text-navy">Need urgent help?</p>
             <p class="mt-1">

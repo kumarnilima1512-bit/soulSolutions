@@ -42,5 +42,9 @@ export default defineNuxtConfig({
   notionActivityDatabaseId: '',
   notionTestimonialsDatabaseId: '',
   notionBookingsDatabaseId: '',
+  mailUser: '',   
+  mailPass: '',   
+  mailTo: '',     
+
 },
 })
