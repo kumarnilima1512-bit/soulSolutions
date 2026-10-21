@@ -71,10 +71,10 @@ const reduceMotion = usePreferredReducedMotion()
           </a>
 
           <a
-            href="/about"
+            href="https://wa.me/919874689332"
             class="rounded-full border-[1.5px] border-plum/70 px-7 py-3.5 text-sm font-medium text-plum transition-all duration-300 hover:scale-[1.03] hover:border-violet hover:bg-white/60"
           >
-            Learn More
+            Contact Us
           </a>
         </div>
       </div>
