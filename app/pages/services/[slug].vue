@@ -212,12 +212,10 @@ const initials = (name: string) =>
           </table>
         </div>
 
-        <p class="mt-3 text-xs leading-relaxed text-navy/50">
-          Online sessions are conducted via Zoom or Google Meet. Advance payment is required to confirm your appointment slot.
-        </p>
-        <p class="mt-2 text-xs leading-relaxed text-navy/50">
-          International consultations are also available. For international charges and details, please
-          <NuxtLink to="/contact" class="font-medium text-plum underline underline-offset-2 transition-colors hover:text-navy">contact us</NuxtLink>.
+        <p class="mt-3 text-sm font-semibold leading-relaxed text-plum"> Online sessions are conducted via Zoom or Google Meet. Advance payment is required to confirm your appointment slot.
+          </p>
+        <p class="mt-2 text-sm font-semibold leading-relaxed text-plum"> International consultations are also available. For international charges and details, please
+          <NuxtLink to="/contact" class="font-bold text-navy underline underline-offset-2 transition-colors hover:text-plum" > contact us </NuxtLink>. 
         </p>
       </div>
       <div class="mx-auto mt-14 max-w-[720px] border-t border-plum/15 pt-8">
