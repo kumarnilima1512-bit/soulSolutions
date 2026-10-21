@@ -174,13 +174,12 @@ const initials = (name: string) =>
         <p class="mt-1 text-sm text-navy/60">All sessions are by prior appointment only.</p>
 
         <div class="mt-6 overflow-x-auto rounded-[1.5rem] bg-white shadow-[0_10px_40px_rgba(30,77,70,0.08)]">
-          <table class="w-full min-w-[620px] text-left text-sm">
+          <table class="w-full min-w-[520px] text-left text-sm">
             <thead class="bg-lavender text-navy">
               <tr>
                 <th class="px-5 py-4 font-medium">Consultant</th>
                 <th class="px-3 py-4 font-medium">Offline<span class="block text-[0.65rem] font-normal text-navy/55">In clinic</span></th>
                 <th class="px-3 py-4 font-medium">Online<span class="block text-[0.65rem] font-normal text-navy/55">Zoom / Meet</span></th>
-                <th class="px-3 py-4 font-medium">International<span class="block text-[0.65rem] font-normal text-navy/55">INR</span></th>
                 <th class="px-5 py-4" />
               </tr>
             </thead>
@@ -200,7 +199,6 @@ const initials = (name: string) =>
                 </td>
                 <td class="px-3 py-4 font-medium text-navy/85">{{ rupee(c.fees.offline) }}</td>
                 <td class="px-3 py-4 font-medium text-navy/85">{{ rupee(c.fees.online) }}</td>
-                <td class="px-3 py-4 font-medium text-navy/85">{{ rupee(c.fees.international) }}</td>
                 <td class="px-5 py-4 text-right">
                   <NuxtLink
                     :to="`/book?service=${service.id}&doctor=${c.id}`"
@@ -215,10 +213,13 @@ const initials = (name: string) =>
         </div>
 
         <p class="mt-3 text-xs leading-relaxed text-navy/50">
-          Online sessions are conducted via Zoom or Google Meet. Advance payment is required to confirm your appointment slot. International fees are charged in Indian Rupees (INR).
+          Online sessions are conducted via Zoom or Google Meet. Advance payment is required to confirm your appointment slot.
+        </p>
+        <p class="mt-2 text-xs leading-relaxed text-navy/50">
+          International consultations are also available. For international charges and details, please
+          <NuxtLink to="/contact" class="font-medium text-plum underline underline-offset-2 transition-colors hover:text-navy">contact us</NuxtLink>.
         </p>
       </div>
-
       <div class="mx-auto mt-14 max-w-[720px] border-t border-plum/15 pt-8">
         <NuxtLink to="/services" class="group inline-flex items-center gap-2 font-medium text-plum">
           <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
