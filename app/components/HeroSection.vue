@@ -86,9 +86,9 @@ const reduceMotion = usePreferredReducedMotion()
       class="hero-mask relative h-[380px] sm:h-[460px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[68%]"
     >
       
-        <div class="absolute -inset-[3%]" :style="layerStyle(6)">
+        <div class="absolute inset-x-0 -top-0 bottom-0 translate-y-6" :style="layerStyle(6)">
         <img
-          src="/images/landing.jpeg"
+          src="/images/landing.png"
           alt=""
             class="h-full w-full object-cover object-[70%_center] scale-95"
             />
