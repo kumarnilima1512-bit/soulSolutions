@@ -329,7 +329,7 @@ onBeforeUnmount(() => {
     <CtaBanner
       tone="cream"
       title="'When we are no longer able to change a situation, we are challenged to change ourselves.'"
-      text=" ~ V Frankl"
+      text=" ~ Viktor Frankl"
       button="Book a Joint Consultation"
     />
 
