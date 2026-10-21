@@ -71,7 +71,9 @@ const openProfile = (m: Member, source: ProfileSource) => {
   selected.value = m
 }
 
-const isFounderView = computed(() => profileSource.value === 'founders')
+const isFounderView = computed(
+  () => profileSource.value === 'founders' || profileSource.value === 'mentors',
+)
 
 const aboutText = computed(() => {
   const m = selected.value
@@ -116,7 +118,7 @@ onBeforeUnmount(() => {
         </nav>
 
         <h1 class="mt-6 font-serif text-[clamp(2.4rem,5.6vw,4.6rem)] font-semibold leading-[1.08] text-navy">
-          <span class="sr-only">The people behind Soul Solutions.</span>
+          <span class="sr-only">The people behind Soul Solutions</span>
           <span aria-hidden="true">
             <span
               v-for="(w, i) in line1"
@@ -242,13 +244,13 @@ onBeforeUnmount(() => {
 
     <!-- ============ 3. MENTORS ============ -->
     <AboutMemberSection
-      v-if="mentors.length"
-      title="Our mentors"
-      :members="mentors"
-      tone="white"
-      @select="openProfile($event, 'mentors')"
-    />
-
+  v-if="mentors.length"
+  title="Our mentors"
+  :members="mentors"
+  tone="white"
+  variant="know"
+  @select="openProfile($event, 'mentors')"
+/>
     <!-- ============ 4. OUR STORY ============ -->
     <section ref="storyEl" class="relative overflow-hidden bg-cream px-6 py-20 lg:px-10 lg:py-28">
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -294,9 +296,9 @@ onBeforeUnmount(() => {
             <path d="M7.2 6C4.9 7 3.5 9 3.5 11.8V18h6.2v-6.2H6.6c.1-1.5.8-2.5 2-3.2L7.2 6Zm9.3 0c-2.3 1-3.7 3-3.7 5.8V18H19v-6.2h-3.1c.1-1.5.8-2.5 2-3.2L16.5 6Z" />
           </svg>
           <p class="font-serif text-[1.35rem] italic leading-snug text-navy/90 sm:text-[1.6rem]">
-            You do not have to be strong all the time. You only have to begin.
+            "The curious paradox is that when I accept myself just as I am, then I can change."
           </p>
-          <p class="mt-5 font-script text-2xl text-plum">It's okay to feel.</p>
+          <p class="mt-5 font-script text-2xl text-plum">~ Carl Rogers</p>
         </blockquote>
 
         <p
@@ -326,8 +328,8 @@ onBeforeUnmount(() => {
     <!-- ============ 6. CTA ============ -->
     <CtaBanner
       tone="cream"
-      title="Let's build a healthier, happier you, together."
-      text="Meet our team in person, at your own pace."
+      title="'When we are no longer able to change a situation, we are challenged to change ourselves.'"
+      text=" ~ V Frankl"
       button="Book a Joint Consultation"
     />
 
