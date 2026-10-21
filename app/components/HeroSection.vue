@@ -81,33 +81,20 @@ const reduceMotion = usePreferredReducedMotion()
     </div>
 
     <!-- Illustration -->
-        <!-- Illustration -->
+    
     <div
       class="hero-mask relative h-[380px] sm:h-[460px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[68%]"
     >
-      <div class="absolute -inset-[3%]" :style="layerStyle(6)">
-        <!-- Reduced motion , still image -->
+      
+        <div class="absolute -inset-[3%]" :style="layerStyle(6)">
         <img
-          v-if="reduceMotion === 'reduce'"
-          src="/images/hero.png"
-          alt="A woman sitting on a hilltop at sunrise with her arms open wide, a book and a cup beside her"
-          class="h-full w-full object-cover object-[70%_center]"
-        />
+          src="/images/landing.jpeg"
+          alt=""
+            class="h-full w-full object-cover object-[70%_center] scale-95"
+            />
+        </div>
 
-        <!-- Normal: looping video (poster = video ) -->
-        <video
-          v-else
-          class="h-full w-full object-cover object-[70%_center]"
-          src="/images/about.png"
-          poster="/images/about.png"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="auto"
-          aria-label="A woman sitting on a hilltop at sunrise with her arms open wide"
-        />
-      </div>
+
 
       <!-- Handwritten text -->
       <!-- <p
