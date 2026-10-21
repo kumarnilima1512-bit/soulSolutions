@@ -6,7 +6,8 @@ const props = defineProps<{
   title: string
   members: Member[]
   tone?: 'white' | 'lavender'
-  variant?: 'default' | 'team' // 'team' = photo, name, designation only
+  // 'team' = photo, name, designation | 'know' = photo, name, role + "Know more" | default = full card
+  variant?: 'default' | 'team' | 'know'
 }>()
 
 const emit = defineEmits<{ select: [member: Member] }>()
@@ -34,6 +35,7 @@ const cardBg = computed(() =>
   props.tone === 'lavender' ? 'bg-white' : 'bg-gradient-to-br from-lavender-soft via-white to-[#fff6ee]',
 )
 const isTeam = computed(() => props.variant === 'team')
+const isKnow = computed(() => props.variant === 'know')
 </script>
 
 <template>
@@ -84,7 +86,13 @@ const isTeam = computed(() => props.variant === 'team')
               <p v-if="m.designation" class="mt-1 text-sm text-navy/60">{{ m.designation }}</p>
             </template>
 
-            <!-- Default variant (mentors) -->
+            <!-- Know variant (mentors): name + role only -->
+            <template v-else-if="isKnow">
+              <h3 class="mt-4 font-serif text-xl font-semibold leading-snug text-navy">{{ m.name }}</h3>
+              <p v-if="m.role" class="mt-1 text-sm text-navy/60">{{ m.role }}</p>
+            </template>
+
+            <!-- Default variant -->
             <template v-else>
               <p v-if="departmentLabel(m.department)" class="mt-4 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-plum/60">
                 {{ departmentLabel(m.department) }}
@@ -110,10 +118,13 @@ const isTeam = computed(() => props.variant === 'team')
 
             <button
               type="button"
-              class="mt-auto pt-5 text-sm font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline"
+              class="mt-auto inline-flex items-center justify-center gap-1.5 pt-5 text-sm font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline"
               @click="emit('select', m)"
             >
-              View full profile
+              {{ isKnow ? 'Know more' : 'View full profile' }}
+              <svg v-if="isKnow" viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
             </button>
           </article>
         </div>
