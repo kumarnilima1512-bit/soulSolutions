@@ -23,6 +23,7 @@ function useReveal(threshold = 0.15) {
 }
 
 const { el: foundersEl, shown: foundersShown } = useReveal(0.1)
+const { el: mentorsEl, shown: mentorsShown } = useReveal(0.1)
 const { el: storyEl, shown: storyShown } = useReveal(0.12)
 
 const base = 'transition-all duration-[900ms] ease-out'
@@ -52,7 +53,7 @@ const mentors = computed(() => byType('mentor'))
 const professionals = computed(() => byType('professional'))
 
 // The final "The people who care for you" section lists everyone: founders first, then mentors, then professionals
-const everyone = computed(() => [...founders.value, ...mentors.value, ...professionals.value])
+const everyone = computed(() => members.value ?? [])
 
 // Pictures that failed to load fall back to the initials circle
 const failedPhotos = ref(new Set<string>())
@@ -243,14 +244,74 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============ 3. MENTORS ============ -->
-    <AboutMemberSection
-  v-if="mentors.length"
-  title="Our mentors"
-  :members="mentors"
-  tone="white"
-  variant="know"
-  @select="openProfile($event, 'mentors')"
-/>
+<section v-if="mentors.length" ref="mentorsEl" class="bg-white px-6 pb-16 lg:px-10 lg:pb-24">
+  <div class="mx-auto max-w-[1100px]">
+    <div class="mx-auto max-w-[640px] text-center" :class="[base, mentorsShown ? on : off]">
+      <h2 class="font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
+        Our mentors
+      </h2>
+    </div>
+
+    <div
+  class="mt-10 grid gap-3 sm:mt-14 sm:gap-6 lg:gap-8"
+  :class="
+    mentors.length === 1
+      ? 'mx-auto max-w-[540px]'
+      : mentors.length > 2
+        ? 'grid-cols-2 lg:grid-cols-3'
+        : 'grid-cols-2'
+  "
+>
+      <div
+    v-for="(m, i) in mentors"
+    :key="m.id"
+    :class="[base, mentorsShown ? on : off]"
+    :style="{ transitionDelay: `${200 + i * 180}ms` }"
+  >
+        <article class="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] bg-gradient-to-br from-lavender-soft via-white to-[#fff6ee] p-4 shadow-[0_10px_40px_rgba(63,46,128,0.07)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.2)] sm:rounded-[2rem] sm:p-8 lg:p-10">
+          <div class="text-center">
+            <div class="relative mx-auto h-24 w-24 sm:h-40 sm:w-40 lg:h-44 lg:w-44">
+              <span class="absolute -inset-2 animate-ring rounded-full border border-violet/30 max-md:animate-none" aria-hidden="true" />
+              <div class="h-full w-full overflow-hidden rounded-full ring-4 ring-white">
+                <img
+                  v-if="m.photo_url && !failedPhotos.has(m.id)"
+                  :src="m.photo_url"
+                  :alt="`Portrait of ${m.name}`"
+                  loading="lazy"
+                  class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  @error="failedPhotos.add(m.id)"
+                />
+                <div
+                  v-else
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-violet/40 font-serif text-2xl font-semibold text-plum transition-transform duration-500 group-hover:scale-105 sm:text-4xl"
+                  aria-hidden="true"
+                >
+                  {{ initials(m.name) }}
+                </div>
+              </div>
+            </div>
+
+            <h3 class="mt-4 font-serif text-base font-semibold leading-snug text-navy sm:mt-6 sm:text-2xl lg:text-[1.7rem]">
+              {{ m.name }}
+            </h3>
+            <p v-if="m.role" class="mt-1 text-[0.72rem] leading-snug text-navy/60 sm:mt-1.5 sm:text-sm">{{ m.role }}</p>
+          </div>
+
+          <button
+            type="button"
+            class="mt-auto inline-flex items-center justify-center gap-1.5 pt-4 text-center text-[0.75rem] font-medium text-plum underline-offset-4 transition-colors hover:text-violet hover:underline sm:pt-7 sm:text-sm"
+            @click="openProfile(m, 'mentors')"
+          >
+            Know more
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
     <!-- ============ 4. OUR STORY ============ -->
     <section ref="storyEl" class="relative overflow-hidden bg-cream px-6 py-20 lg:px-10 lg:py-28">
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
