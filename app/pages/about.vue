@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============ 2. FOUNDERS ============ -->
-    <section id="founders" ref="foundersEl" class="scroll-mt-24 bg-white px-6 py-16 lg:px-10 lg:py-24">
+    <section id="founders" ref="foundersEl" class="scroll-mt-24 bg-white px-6 pb-4 pt-16 lg:px-10 lg:pb-4 lg:pt-24">
       <div class="mx-auto max-w-[1100px]">
         <div class="mx-auto max-w-[640px] text-center" :class="[base, foundersShown ? on : off]">
           <p class="text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70">Our founders</p>
@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============ 3. MENTORS ============ -->
-<section v-if="mentors.length" ref="mentorsEl" class="bg-white px-6 pb-16 lg:px-10 lg:pb-24">
+<section v-if="mentors.length" ref="mentorsEl" class="bg-white px-6 pb-4 pt-4 lg:px-10 lg:pb-4 lg:pt-6">
   <div class="mx-auto max-w-[1100px]">
     <div class="mx-auto max-w-[640px] text-center" :class="[base, mentorsShown ? on : off]">
       <h2 class="font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
@@ -313,7 +313,7 @@ onBeforeUnmount(() => {
   </div>
 </section>
     <!-- ============ 4. OUR STORY ============ -->
-    <section ref="storyEl" class="relative overflow-hidden bg-cream px-6 py-20 lg:px-10 lg:py-28">
+    <section ref="storyEl" class="relative overflow-hidden bg-cream px-6 pb-4 pt-8 lg:px-10 lg:pb-4 lg:pt-10">
       <div class="pointer-events-none absolute inset-0" aria-hidden="true">
         <div class="absolute -left-24 top-10 h-64 w-64 animate-blob-a rounded-full bg-lavender/60 blur-3xl max-md:animate-none" />
         <div class="absolute -right-24 bottom-0 h-72 w-72 animate-blob-b rounded-full bg-peach/50 blur-3xl max-md:animate-none" />
@@ -359,7 +359,7 @@ onBeforeUnmount(() => {
         </blockquote>
 
         <p
-          class="mt-10 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70"
+          class="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[0.72rem] font-medium uppercase tracking-[0.3em] text-plum/70"
           :class="[base, storyShown ? on : off]"
           style="transition-delay: 1050ms"
         >

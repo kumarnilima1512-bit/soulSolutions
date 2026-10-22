@@ -39,10 +39,10 @@ const isKnow = computed(() => props.variant === 'know')
 </script>
 
 <template>
-  <section ref="el" class="px-6 py-16 lg:px-10 lg:py-24" :class="sectionBg">
+  <section ref="el" class="px-6 pb-16 pt-4 lg:px-10 lg:pb-24 lg:pt-6" :class="sectionBg">
     <div class="mx-auto max-w-[1240px]">
-      <div class="mx-auto max-w-[640px] text-center" :class="[base, shown ? on : off]">
-        <h2 class="font-serif text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
+      <div class="mx-auto text-center" :class="[base, shown ? on : off]">
+        <h2 class="whitespace-nowrap font-serif text-[clamp(1.3rem,5.4vw,3.2rem)] font-semibold leading-[1.1] text-navy">
           {{ title }}
         </h2>
       </div>
