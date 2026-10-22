@@ -175,17 +175,27 @@ const steps = [
         </div>
 
         <!-- Book button, right under the care journey -->
-        <div class="mt-9 text-center sm:mt-10" :class="[base, heroShown ? on : off]" style="transition-delay: 2900ms">
+        <div
+            class="mt-9 flex flex-wrap items-center justify-center gap-4 sm:mt-10 sm:gap-5"
+            :class="[base, heroShown ? on : off]"
+            style="transition-delay: 2900ms">
           <NuxtLink
-            to="/book"
-            class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(30,77,70,0.4)]"
-          >
-            Book a Joint Consultation
-            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </NuxtLink>
-        </div>
+              to="/book"
+              class="group inline-flex items-center gap-2 rounded-full bg-plum px-7 py-3.5 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(30,77,70,0.4)]"
+            >
+              Book a Joint Consultation
+              <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </NuxtLink>
+
+            <NuxtLink
+              to="/contact#query"
+              class="inline-flex items-center gap-4 rounded-full border-[1.5px] border-plum/70 px-6 py-3 text-sm font-medium text-plum transition-all duration-300 hover:scale-[1.03] hover:border-violet hover:bg-white/60 sm:px-7 sm:py-3.5"
+            >
+              Ask a doubt
+            </NuxtLink>
+          </div>
       </div>
 
       <svg class="absolute -bottom-px left-0 z-10 h-12 w-full sm:h-16 lg:h-20" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
