@@ -20,7 +20,7 @@ const info = [
   },
   {
     label: 'Visit us',
-    value: 'Soul Solutions, Flat-5B, Sudarshan Apartment, B/38, Atabagan, Garia, Kolkata - 700084',
+    value: 'Soul Solutions, Flat-5, Sudarshan Apartment, B/38, Atabagan, Garia, Kolkata - 700084',
     note: 'Landmark: Chirar More',
     href: 'https://maps.app.goo.gl/khGP5h69njtjg5aB8',
     external: true,

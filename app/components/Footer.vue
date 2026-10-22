@@ -159,7 +159,7 @@ const year = new Date().getFullYear()
                   rel="noopener noreferrer"
                   class="block leading-snug transition-colors duration-300 hover:text-white sm:leading-relaxed"
                 >
-                  Soul Solutions, Flat-5B, Sudarshan Apartment, B/38, Atabagan, Garia, Kolkata - 700084
+                  Soul Solutions, Flat-5, Sudarshan Apartment, B/38, Atabagan, Garia, Kolkata - 700084
                   <span class="mt-0.5 block text-white/55">Landmark: Chirar More</span>
                 </a>
 
