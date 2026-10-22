@@ -15,6 +15,7 @@ interface NotionBlock {
 }
 interface NotionPage {
   id: string
+  last_edited_time: string
   properties: {
     Name?: { title: RichText[] }
     Slug?: { rich_text: RichText[] }
@@ -127,7 +128,9 @@ export default cachedEventHandler(
         id: page.id,
         name: text(p.Name?.title),
         shortDescription: text(p.ShortDescription?.rich_text),
-        image: fileUrl(p.Image?.files?.[0]),
+                image: fileUrl(p.Image?.files?.[0])
+          ? `/api/service-image/${page.id}?w=1200&v=${encodeURIComponent(page.last_edited_time)}`
+          : null,
         blocks: blocksRes.results.map(mapBlock).filter(Boolean),
         consultants,
       }

@@ -74,14 +74,18 @@ const { el: gridEl, shown: gridShown } = useReveal()
             :to="`/services/${s.slug}`"
             class="group flex flex-col overflow-hidden rounded-[1.25rem] bg-white shadow-[0_10px_40px_rgba(63,46,128,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_26px_60px_rgba(124,92,196,0.22)] sm:rounded-[1.75rem]"
             :class="gridShown ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'"
-            :style="{ transitionDelay: `${i * 100}ms`, transitionDuration: '900ms', transitionProperty: 'opacity, transform' }"
+            :style="{ transitionDelay: `${Math.min(i, 5) * 60}ms`, transitionDuration: '500ms', transitionProperty: 'opacity, transform' }"
           >
             <div class="aspect-[4/3] overflow-hidden bg-lavender-soft">
               <img
                 v-if="s.image"
                 :src="s.image"
                 :alt="s.name"
-                loading="lazy"
+                width="640"
+                height="480"
+                :loading="i < 6 ? 'eager' : 'lazy'"
+                :fetchpriority="i < 3 ? 'high' : 'auto'"
+                decoding="async"
                 class="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
               />
               <div v-else class="flex h-full w-full items-center justify-center bg-gradient-to-br from-lavender to-peach" aria-hidden="true">
