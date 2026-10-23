@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@vueuse/motion/nuxt' , '@nuxtjs/sitemap'],
 
   site: {
-  url: 'https://soulsolutions.cloud',
+  url: 'https://soulsolutions.in',
     },
 
   css: ['~/assets/css/main.css'],
