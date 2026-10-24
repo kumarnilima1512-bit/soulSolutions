@@ -11,6 +11,8 @@ interface NotionFile {
 interface NotionBlock {
   id: string
   type: string
+  has_children?: boolean
+  last_edited_time?: string
   [key: string]: any
 }
 interface NotionPage {
@@ -43,31 +45,86 @@ const runs = (arr?: RichText[]) =>
     code: t.annotations.code,
     href: t.href,
   }))
+// Pictures inside the page: external links are used as they are, Notion-hosted
+const blockImage = (b: NotionBlock) => {
+  const img = b.image
+  if (!img) return null
+  if (img.type === 'external') return img.external?.url ?? null
+  return `/api/service-block-image/${b.id}?v=${encodeURIComponent(b.last_edited_time ?? '')}`
+}
 
-const mapBlock = (b: NotionBlock) => {
+// Blocks whose inner content we also load (FAQ answers, columns, etc.)
+const WITH_CHILDREN = new Set([
+  'toggle',
+  'heading_1',
+  'heading_2',
+  'heading_3',
+  'column_list',
+  'column',
+  'callout',
+  'quote',
+  'bulleted_list_item',
+  'numbered_list_item',
+])
+
+// A heading with its "toggle" switched on in Notion is shown as an FAQ accordion
+const heading = (b: NotionBlock, key: 'heading_1' | 'heading_2' | 'heading_3') => {
+  const h = b[key]
+  const base = { id: b.id }
+  return h.is_toggleable
+    ? { ...base, type: 'toggle', runs: runs(h.rich_text) }
+    : { ...base, type: key, runs: runs(h.rich_text) }
+}
+
+const mapBlock = (b: NotionBlock): Record<string, any> | null => {
   const base = { id: b.id, type: b.type }
   switch (b.type) {
     case 'paragraph':
       return { ...base, runs: runs(b.paragraph.rich_text) }
     case 'heading_1':
-      return { ...base, runs: runs(b.heading_1.rich_text) }
     case 'heading_2':
-      return { ...base, runs: runs(b.heading_2.rich_text) }
     case 'heading_3':
-      return { ...base, runs: runs(b.heading_3.rich_text) }
+      return heading(b, b.type)
     case 'bulleted_list_item':
       return { ...base, runs: runs(b.bulleted_list_item.rich_text) }
     case 'numbered_list_item':
       return { ...base, runs: runs(b.numbered_list_item.rich_text) }
     case 'quote':
       return { ...base, runs: runs(b.quote.rich_text) }
+    case 'toggle':
+      return { ...base, runs: runs(b.toggle.rich_text) }
+    case 'callout':
+      return { ...base, runs: runs(b.callout.rich_text), icon: b.callout.icon?.emoji ?? null }
+    case 'column_list':
+    case 'column':
+      return base
     case 'image':
-      return { ...base, url: fileUrl(b.image), caption: text(b.image.caption) }
+      return { ...base, url: blockImage(b), caption: text(b.image.caption) }
     case 'divider':
       return base
     default:
       return null
   }
+}
+
+// Loads a block's children, and theirs too (up to 3 levels deep).
+// One request at a time, so Notion's rate limit is not hit on pages with many toggles.
+const loadBlocks = async (parentId: string, depth = 0): Promise<Record<string, any>[]> => {
+  const res = await $fetch<{ results: NotionBlock[] }>(
+    `https://api.notion.com/v1/blocks/${parentId}/children?page_size=100`,
+    { headers: notionHeaders() },
+  )
+
+  const out: Record<string, any>[] = []
+  for (const b of res.results) {
+    const m = mapBlock(b)
+    if (!m) continue
+    if (b.has_children && depth < 3 && WITH_CHILDREN.has(b.type)) {
+      m.children = await loadBlocks(b.id, depth + 1)
+    }
+    out.push(m)
+  }
+  return out
 }
 
 export default cachedEventHandler(
@@ -98,11 +155,7 @@ export default cachedEventHandler(
       if (!page) throw createError({ statusCode: 404, statusMessage: 'Service not found' })
 
       const p = page.properties
-
-      const blocksRes = await $fetch<{ results: NotionBlock[] }>(
-        `https://api.notion.com/v1/blocks/${page.id}/children?page_size=100`,
-        { headers: notionHeaders() },
-      )
+      const blocks = await loadBlocks(page.id)
 
       const wanted = text(p.Consultants?.rich_text)
         .split(',')
@@ -128,10 +181,10 @@ export default cachedEventHandler(
         id: page.id,
         name: text(p.Name?.title),
         shortDescription: text(p.ShortDescription?.rich_text),
-                image: fileUrl(p.Image?.files?.[0])
+        image: fileUrl(p.Image?.files?.[0])
           ? `/api/service-image/${page.id}?w=1200&v=${encodeURIComponent(page.last_edited_time)}`
           : null,
-        blocks: blocksRes.results.map(mapBlock).filter(Boolean),
+        blocks,
         consultants,
       }
     } catch (err: any) {
